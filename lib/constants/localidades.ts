@@ -1,0 +1,27 @@
+export const LOCALIDADES = [
+  // Ciudades principales
+  'Santa Fe Capital',
+  'Rosario',
+  'Santo Tomé',
+  'Reconquista',
+  'Rafaela',
+  'Santa Rosa de Calchines',
+  // Departamentos de la provincia de Santa Fe
+  'Belgrano',
+  'Caseros',
+  'Castellanos',
+  'Constitución',
+  'Garay',
+  'General López',
+  'General Obligado',
+  'Iriondo',
+  '9 de Julio',
+  'La Capital',
+  'San Cristóbal',
+  'San Javier',
+  'San Jerónimo',
+  'San Justo',
+  'San Lorenzo',
+  'San Martín',
+  'Vera',
+]
