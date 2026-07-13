@@ -12,7 +12,7 @@ import { CATEGORIES } from '@/lib/constants/tickets'
 const STATS_VACIAS: StatsPublicas = { total: 0, resueltos: 0, tasaResolucion: 0, promedioDias: 0 }
 
 const PASOS = [
-  { icono: 'edit', titulo: 'Registrás', descripcion: 'Contanos tu reclamo, pedido o consulta en minutos.' },
+  { icono: 'edit', titulo: 'Registrás', descripcion: 'Contanos tu consulta o pedido en minutos.' },
   {
     icono: 'inbox',
     titulo: 'El equipo lo recibe',
@@ -78,7 +78,7 @@ export default async function Home() {
                 una Santa Fe al servicio de los santafesinos
               </h1>
               <p className="mx-auto mt-3 max-w-lg text-base text-white/90 sm:mx-0 sm:text-lg">
-                Registrá tu pedido, consulta o reclamo en minutos. Hacé el seguimiento en tiempo real.
+                Registrá tu consulta o pedido en minutos. Hacé el seguimiento en tiempo real.
               </p>
               <div className="mt-8 flex justify-center sm:justify-start">
                 {user ? (
@@ -159,7 +159,7 @@ export default async function Home() {
 
       <section className="px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-[1200px]">
-          <h2 className="text-center text-2xl font-extrabold text-gray-900">¿Sobre qué podés reclamar?</h2>
+          <h2 className="text-center text-2xl font-extrabold text-gray-900">¿Sobre qué podés consultarnos?</h2>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {CATEGORIES.map((cat) => (
               <div

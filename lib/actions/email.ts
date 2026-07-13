@@ -15,7 +15,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
   }
 
   const ticketNum = ticketId.slice(0, 8).toUpperCase()
-  const typeLabel = type === 'reclamo' ? 'Reclamo' : type === 'pedido' ? 'Pedido' : 'Consulta'
+  const typeLabel = type === 'pregunta' ? 'Consulta' : 'Pedido'
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',

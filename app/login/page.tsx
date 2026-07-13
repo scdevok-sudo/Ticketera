@@ -33,7 +33,7 @@ export default async function LoginPage() {
 
         <h2 className="text-lg font-bold text-zinc-800">Bienvenido</h2>
         <p className="mt-2 text-sm text-zinc-600">
-          Registrá tu reclamo, pedido o consulta. Tu voz llega directo al equipo del diputado.
+          Registrá tu consulta o pedido. Tu voz llega directo al equipo del diputado.
         </p>
 
         <div className="mt-6">

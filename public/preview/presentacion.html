@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Unidos Hacemos — Presentación</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  :root {
+    --naranja: #FF7402;
+    --amarillo: #FFB002;
+    --azul: #2D3077;
+    --violeta: #902682;
+    --bg: #F5F5F3;
+    --text: #26262B;
+    --text-muted: #77777D;
+    --card-border: #E5E5E2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: #888;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 20px auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .page-inner {
+    padding: 20mm;
+  }
+
+  /* ---------- Page header (all interior pages) ---------- */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--naranja);
+    height: 12mm;
+    padding: 0 20mm;
+  }
+  .page-header img { height: 7mm; }
+  .page-header span {
+    color: #fff;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Cover page ---------- */
+  .cover {
+    background: linear-gradient(150deg, #FFB002 0%, #FF8802 45%, #FF7402 100%);
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 20mm;
+  }
+  .cover img.logo { width: 200px; margin-bottom: 28px; }
+  .cover .divider {
+    width: 60px; height: 2px;
+    background: rgba(255,255,255,.55);
+    margin: 22px 0;
+  }
+  .cover h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; }
+  .cover .subtitle { font-size: 17px; font-weight: 500; margin-top: 10px; opacity: .95; }
+  .cover .subtitle-small { font-size: 13px; font-weight: 500; margin-top: 6px; opacity: .85; }
+  .cover .photo {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 3px solid #fff; object-fit: cover;
+    box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  }
+  .cover .footer-text { font-size: 12px; opacity: .85; margin-top: 24px; }
+  .cover .footer-date { font-size: 12px; font-weight: 700; margin-top: 4px; letter-spacing: .04em; }
+
+  /* ---------- Closing page ---------- */
+  .closing {
+    background: var(--azul);
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
+  .closing img.logo { width: 140px; margin-bottom: 26px; }
+  .closing h1 { font-size: 36px; font-weight: 800; }
+  .closing .subtitle { font-size: 14px; opacity: .85; margin-top: 8px; }
+  .closing .divider { width: 60px; height: 2px; background: rgba(255,255,255,.35); margin: 26px 0; }
+  .closing .url {
+    font-size: 15px; font-weight: 600;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 8px 18px; border-radius: 6px;
+  }
+  .closing .dev-by { font-size: 11px; opacity: .7; text-transform: uppercase; letter-spacing: .08em; }
+  .closing .dev-name { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .closing .dev-url { font-size: 13px; opacity: .85; margin-top: 4px; }
+  .closing .dev-email { font-size: 12px; opacity: .7; margin-top: 14px; }
+
+  /* ---------- Section title ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--naranja);
+    margin-bottom: 4px;
+  }
+  .page-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+  .lead {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700;
+    padding: 5px 12px; border-radius: 100px;
+    margin-bottom: 14px;
+  }
+  .badge-restricted { background: #FCEFE5; color: var(--naranja); }
+  .badge-public { background: #E4F6EA; color: #1D8A4E; }
+  .badge-admin { background: #F3E5F0; color: var(--violeta); }
+
+  /* ---------- Browser frame ---------- */
+  .browser-frame {
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    background: #fff;
+  }
+  .browser-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: #EDEDEA; padding: 7px 12px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .browser-dots { display: flex; gap: 4px; }
+  .browser-dots span { width: 7px; height: 7px; border-radius: 50%; background: #C9C9C4; }
+  .browser-url {
+    flex: 1; background: #fff; border-radius: 100px;
+    padding: 3px 12px; font-size: 9.5px; color: var(--text-muted);
+    border: 1px solid var(--card-border);
+  }
+  .browser-body { padding: 0; }
+
+  /* ---------- Roles columns (page 2) ---------- */
+  .roles-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
+    margin: 20px 0 24px;
+  }
+  .role-card {
+    border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 16px 14px; text-align: center;
+  }
+  .role-card .icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px; font-size: 19px; color: #fff;
+  }
+  .role-card:nth-child(1) .icon { background: var(--naranja); }
+  .role-card:nth-child(2) .icon { background: var(--azul); }
+  .role-card:nth-child(3) .icon { background: var(--violeta); }
+  .role-card h3 { font-size: 11.5px; font-weight: 800; letter-spacing: .03em; }
+  .role-card .role-sub { font-size: 10px; color: var(--text-muted); margin: 4px 0 10px; line-height: 1.4; }
+  .role-card ul { list-style: none; text-align: left; font-size: 10.5px; line-height: 1.9; }
+  .role-card ul li { position: relative; padding-left: 14px; color: var(--text); }
+  .role-card ul li::before { content: '•'; position: absolute; left: 0; color: var(--naranja); }
+
+  .index-list { margin-top: 6px; }
+  .index-list .index-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--card-border);
+    font-size: 12px;
+  }
+  .index-list .index-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--azul); color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* ---------- Timeline flow (page 4) ---------- */
+  .flow-timeline {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 22px 0 26px;
+  }
+  .flow-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .flow-circle {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--naranja); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .flow-label { font-size: 9px; margin-top: 6px; color: var(--text-muted); font-weight: 600; text-align: center; }
+  .flow-line { flex: 1; height: 2px; background: var(--naranja); margin: 0 -2px; margin-top: -18px; }
+
+  /* ---------- Form mockup columns ---------- */
+  .cols-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .mock-card {
+    border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 14px; background: var(--bg);
+  }
+  .stepper { display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
+  .stepper .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--card-border); }
+  .stepper .dot.active { background: var(--naranja); }
+  .stepper .bar { flex: 1; height: 2px; background: var(--card-border); }
+  .mock-card h4 { font-size: 11px; font-weight: 700; margin-bottom: 10px; }
+  .mock-chip {
+    display: inline-block; font-size: 9px; padding: 5px 8px;
+    border: 1px solid var(--card-border); border-radius: 6px;
+    background: #fff; margin: 2px 3px 2px 0;
+  }
+  .mock-chip.selected { border-color: var(--naranja); background: #FCEFE5; color: var(--naranja); font-weight: 700; }
+  .mock-input {
+    background: #fff; border: 1px solid var(--card-border); border-radius: 6px;
+    padding: 6px 8px; font-size: 9px; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .mock-input-label { font-size: 8.5px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+  .mock-btn {
+    background: var(--naranja); color: #fff; font-size: 9.5px; font-weight: 700;
+    text-align: center; border-radius: 6px; padding: 7px; margin-top: 6px;
+  }
+  .mock-btn-outline {
+    border: 1px dashed var(--card-border); color: var(--text-muted); font-size: 9px;
+    text-align: center; border-radius: 6px; padding: 7px; margin-top: 6px;
+  }
+
+  /* success screen */
+  .success-box {
+    border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 26px; text-align: center; background: var(--bg); margin-top: 16px;
+  }
+  .success-check {
+    width: 48px; height: 48px; border-radius: 50%; background: #1D8A4E;
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px; font-size: 24px;
+  }
+  .success-box h3 { font-size: 15px; font-weight: 800; }
+  .success-box p { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ---------- List / detail mockups (page 5) ---------- */
+  .list-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid var(--card-border);
+  }
+  .list-header span { font-size: 11px; font-weight: 800; letter-spacing: .03em; }
+  .list-header .mock-btn { margin: 0; padding: 6px 12px; font-size: 9px; }
+  .ticket-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px; border-bottom: 1px solid var(--card-border);
+  }
+  .status-pill {
+    font-size: 8.5px; font-weight: 700; padding: 3px 8px; border-radius: 100px;
+    white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+  }
+  .status-nuevo { background: #E3EEFB; color: #1D5FBF; }
+  .status-revision { background: #FDF3D9; color: #9A7300; }
+  .status-gestion { background: #FCEFE5; color: var(--naranja); }
+  .status-resuelto { background: #E4F6EA; color: #1D8A4E; }
+  .ticket-row .info b { font-size: 11px; display: block; }
+  .ticket-row .info span { font-size: 9.5px; color: var(--text-muted); }
+
+  .detail-split { display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; margin-top: 14px; }
+  .detail-main, .detail-side {
+    border: 1px solid var(--card-border); border-radius: 10px; padding: 14px;
+  }
+  .detail-main .cat { font-size: 9px; color: var(--naranja); font-weight: 700; text-transform: uppercase; }
+  .detail-main h3 { font-size: 13px; font-weight: 800; margin: 4px 0 8px; }
+  .detail-main p.desc { font-size: 10px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+  .tl-title { font-size: 9.5px; font-weight: 800; letter-spacing: .04em; color: var(--text-muted); margin-bottom: 8px; }
+  .tl-item { display: flex; gap: 8px; align-items: flex-start; font-size: 10px; margin-bottom: 8px; }
+  .tl-item .tl-icon { font-size: 12px; margin-top: 1px; }
+  .tl-item.done .tl-icon { color: #1D8A4E; }
+  .tl-item.pending .tl-icon { color: var(--naranja); }
+  .tl-item span.tl-date { color: var(--text-muted); font-size: 9px; display: block; }
+
+  .side-block { margin-bottom: 14px; }
+  .side-block h5 { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin-bottom: 6px; }
+  .side-block .val { font-size: 11px; font-weight: 700; }
+
+  .likes-box {
+    background: var(--bg); border-radius: 8px; padding: 10px; text-align: center; font-size: 10px;
+  }
+  .likes-box .mock-btn { margin-top: 8px; }
+
+  .internal-note {
+    background: #FDF6E3; border: 1px solid #F0DFA0; border-radius: 8px;
+    padding: 12px; margin: 12px 0; font-size: 9.5px;
+  }
+  .internal-note .lock-label {
+    font-size: 8.5px; font-weight: 800; color: #8A6D00; text-transform: uppercase;
+    letter-spacing: .04em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ---------- Dashboard sidebar layout (page 6) ---------- */
+  .dash-frame { display: grid; grid-template-columns: 130px 1fr; min-height: 300px; }
+  .dash-sidebar { background: var(--azul); color: #fff; padding: 14px 10px; }
+  .dash-sidebar .dash-logo { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; margin-bottom: 18px; }
+  .dash-sidebar .dash-logo img { width: 20px; }
+  .dash-nav-item {
+    display: flex; align-items: center; gap: 8px; font-size: 9.5px; font-weight: 600;
+    padding: 8px 8px; border-radius: 6px; margin-bottom: 4px; color: rgba(255,255,255,.75);
+  }
+  .dash-nav-item.active { background: rgba(255,255,255,.12); color: #fff; }
+  .dash-user { display: flex; align-items: center; gap: 8px; margin-top: 30px; font-size: 9.5px; font-weight: 600; }
+  .dash-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--naranja); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; }
+  .dash-content { padding: 14px 16px; background: #fff; }
+  .dash-content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .dash-content-header span { font-size: 11px; font-weight: 800; }
+  .dash-filter { font-size: 9px; border: 1px solid var(--card-border); border-radius: 6px; padding: 4px 10px; color: var(--text-muted); }
+  table.dash-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  table.dash-table th {
+    text-align: left; color: var(--text-muted); font-weight: 700; text-transform: uppercase;
+    font-size: 8px; letter-spacing: .04em; padding: 6px 4px; border-bottom: 1px solid var(--card-border);
+  }
+  table.dash-table td { padding: 8px 4px; border-bottom: 1px solid var(--card-border); }
+  .priority-pill { font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+  .priority-alta { background: #FBE3E3; color: #B23434; }
+  .priority-media { background: #FDF3D9; color: #9A7300; }
+
+  .feature-list { list-style: none; margin-top: 14px; }
+  .feature-list li {
+    font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--card-border);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .feature-list li i { color: #1D8A4E; margin-top: 2px; }
+
+  .callout-box {
+    background: var(--bg); border-radius: 10px; padding: 16px; margin-top: 16px;
+  }
+  .callout-box .feature-list li { border-bottom-color: #E0E0DC; }
+
+  /* ---------- Response box page 7 ---------- */
+  .response-box {
+    border: 1px dashed var(--card-border); border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 9.5px; color: var(--text-muted);
+  }
+  .response-actions { display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap; }
+  .response-actions span {
+    font-size: 8.5px; font-weight: 700; padding: 4px 9px; border-radius: 100px;
+    border: 1px solid var(--card-border);
+  }
+  .response-actions span.on { background: var(--naranja); color: #fff; border-color: var(--naranja); }
+
+  /* ---------- KPI grid page 8 ---------- */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 16px 0 24px; }
+  .kpi-card {
+    background: var(--azul); color: #fff; border-radius: 10px; padding: 16px; text-align: center;
+  }
+  .kpi-card .num { font-size: 24px; font-weight: 800; }
+  .kpi-card .label { font-size: 9.5px; opacity: .85; margin-top: 4px; }
+
+  table.team-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  table.team-table th {
+    text-align: left; background: var(--bg); font-weight: 700; padding: 8px 10px;
+    text-transform: uppercase; font-size: 8.5px; letter-spacing: .03em; color: var(--text-muted);
+  }
+  table.team-table td { padding: 9px 10px; border-bottom: 1px solid var(--card-border); }
+  .status-dot { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: #1D8A4E; font-size: 9.5px; }
+  .status-dot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #1D8A4E; }
+  .role-tag { font-size: 8.5px; font-weight: 700; padding: 3px 8px; border-radius: 100px; background: #EDEDEA; }
+  .role-tag.admin { background: #F3E5F0; color: var(--violeta); }
+
+  /* ---------- Transparency portal page 9 ---------- */
+  .transp-header { text-align: center; margin-bottom: 14px; }
+  .transp-header h2 { font-size: 17px; font-weight: 800; }
+  .transp-header p { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; }
+  .transp-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+  .transp-kpi { border: 1px solid var(--card-border); border-radius: 10px; padding: 12px; text-align: center; }
+  .transp-kpi .num { font-size: 19px; font-weight: 800; color: var(--naranja); }
+  .transp-kpi .label { font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+
+  .bar-chart { margin-bottom: 20px; }
+  .bar-chart h4 { font-size: 10.5px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .03em; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .bar-row .bar-label { width: 100px; font-size: 9px; color: var(--text-muted); flex-shrink: 0; }
+  .bar-row .bar-track { flex: 1; background: var(--bg); border-radius: 4px; height: 12px; overflow: hidden; }
+  .bar-row .bar-fill { height: 100%; background: linear-gradient(90deg, var(--amarillo), var(--naranja)); border-radius: 4px; }
+  .bar-row .bar-value { width: 34px; text-align: right; font-size: 9.5px; font-weight: 700; }
+
+  .line-chart {
+    display: flex; align-items: flex-end; gap: 10px; height: 90px; margin: 10px 0 4px;
+    border-bottom: 1px solid var(--card-border); padding-bottom: 4px;
+  }
+  .line-chart .col-bar { flex: 1; background: linear-gradient(180deg, var(--amarillo), var(--naranja)); border-radius: 3px 3px 0 0; }
+  .line-chart-labels { display: flex; gap: 10px; }
+  .line-chart-labels span { flex: 1; text-align: center; font-size: 8.5px; color: var(--text-muted); }
+
+  .resolved-list { margin-top: 18px; }
+  .resolved-list h4 { font-size: 10.5px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .03em; }
+  .resolved-item { display: flex; gap: 8px; font-size: 10px; padding: 7px 0; border-bottom: 1px solid var(--card-border); }
+  .resolved-item i { color: #1D8A4E; margin-top: 2px; }
+  .resolved-item .r-cat { color: var(--text-muted); }
+
+  .note-box {
+    background: #EAF5EE; border: 1px solid #C7E6D1; border-radius: 8px;
+    padding: 12px 14px; font-size: 10px; color: #1D5B36; margin-top: 18px; line-height: 1.6;
+  }
+
+  /* ---------- Security page 10 ---------- */
+  .sec-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+  .sec-col h4 {
+    font-size: 12px; font-weight: 800; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sec-item { display: flex; gap: 8px; margin-bottom: 12px; }
+  .sec-item i { color: #1D8A4E; font-size: 13px; margin-top: 2px; }
+  .sec-item .t { font-size: 10.5px; font-weight: 700; }
+  .sec-item .d { font-size: 9.5px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
+
+  table.stack-table { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 10.5px; }
+  table.stack-table td { padding: 9px 4px; border-bottom: 1px solid var(--card-border); }
+  table.stack-table td:first-child { font-weight: 700; width: 130px; color: var(--azul); }
+
+  /* ---------- Print instructions (screen only) ---------- */
+  .print-instructions {
+    max-width: 210mm; margin: 0 auto 30px; background: #fff; border-radius: 10px;
+    padding: 14px 18px; text-align: center; font-size: 13px; color: var(--text);
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff; margin: 0; padding: 0; }
+    .page { box-shadow: none; margin: 0; width: auto; min-height: 0; page-break-after: always; }
+    .print-instructions { display: none; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-instructions">
+  <p>Para guardar como PDF: <strong>Ctrl+P</strong> → Destino: "Guardar como PDF" → Más opciones: activar <strong>"Gráficos de fondo"</strong> → Guardar</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 1 — PORTADA -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="cover">
+    <img class="logo" src="../brand/logo-blanco.png" alt="Unidos Hacemos">
+    <div class="divider"></div>
+    <h1>Unidos Hacemos</h1>
+    <p class="subtitle">Sistema de gestión de consultas ciudadanas</p>
+    <p class="subtitle-small">Diputado Provincial José Corral · Santa Fe · 2026</p>
+    <div class="divider"></div>
+    <img class="photo" src="../images/jose-corral.png" alt="José Corral">
+    <p class="footer-text">Desarrollado por SCdev · scdev.com.ar</p>
+    <p class="footer-date">Julio 2026</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 2 — ÍNDICE Y RESUMEN EJECUTIVO -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Resumen ejecutivo</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">Introducción</p>
+    <h1 class="page-title">¿Qué es Unidos Hacemos?</h1>
+    <p class="lead">
+      Unidos Hacemos es la plataforma digital del Diputado Provincial José Corral que permite a cualquier vecino
+      de Santa Fe registrar una consulta o pedido, y hacer seguimiento en tiempo real. El equipo del
+      diputado gestiona cada caso desde un dashboard interno, y el estado de la gestión está disponible
+      públicamente en el portal de transparencia.
+    </p>
+
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="icon"><i class="ti ti-user"></i></div>
+        <h3>CIUDADANO</h3>
+        <p class="role-sub">Cualquier vecino con cuenta de Google</p>
+        <ul>
+          <li>Registrar consultas</li>
+          <li>Hacer seguimiento</li>
+          <li>Apoyar consultas</li>
+          <li>Recibir emails</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="icon"><i class="ti ti-users"></i></div>
+        <h3>EQUIPO INTERNO</h3>
+        <p class="role-sub">Operadores del diputado (hasta 6)</p>
+        <ul>
+          <li>Ver todos los casos</li>
+          <li>Asignar y gestionar</li>
+          <li>Notas internas</li>
+          <li>KPIs y métricas</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="icon"><i class="ti ti-world"></i></div>
+        <h3>PORTAL PÚBLICO</h3>
+        <p class="role-sub">Cualquier persona sin registro</p>
+        <ul>
+          <li>Estadísticas</li>
+          <li>Casos resueltos</li>
+          <li>Sin datos personales</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="section-title">Índice de secciones</p>
+    <div class="index-list">
+      <div class="index-item"><span class="index-num">1</span> Vista del ciudadano sin sesión — Landing y login</div>
+      <div class="index-item"><span class="index-num">2</span> Vista del ciudadano con sesión — Consultas y seguimiento</div>
+      <div class="index-item"><span class="index-num">3</span> Vista del equipo interno — Dashboard de gestión</div>
+      <div class="index-item"><span class="index-num">4</span> Portal de transparencia pública</div>
+      <div class="index-item"><span class="index-num">5</span> Datos técnicos y seguridad</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 3 — SECCIÓN 1: VISTA SIN SESIÓN -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Vista pública</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">01 · Vista pública</p>
+    <h1 class="page-title">Sin registro requerido</h1>
+
+    <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Landing page</p>
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">ticketera-nine.vercel.app</div>
+      </div>
+      <div class="browser-body">
+        <div style="background:var(--naranja);color:#fff;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;font-size:9px;font-weight:700;">
+          <span>Unidos Hacemos</span>
+          <span style="display:flex;gap:14px;font-weight:500;">Hacer una consulta &nbsp; Transparencia</span>
+        </div>
+        <div style="position:relative;height:130px;background:url('../images/santa-fe-ciudad.jpg') center/cover;">
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(45,48,119,.75), rgba(255,116,2,.35));display:flex;flex-direction:column;justify-content:center;padding:16px;color:#fff;">
+            <div style="font-size:14px;font-weight:800;line-height:1.3;max-width:60%;">Unidos construimos, una Santa Fe al servicio de los santafesinos</div>
+            <div style="margin-top:10px;background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;width:fit-content;padding:6px 12px;border-radius:6px;font-size:9px;font-weight:700;">
+              <i class="ti ti-brand-google"></i> Continuar con Google
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-around;padding:10px;font-size:9px;font-weight:700;border-top:1px solid var(--card-border);">
+          <div>1 <span style="font-weight:400;color:var(--text-muted);">Consulta</span></div>
+          <div>0 <span style="font-weight:400;color:var(--text-muted);">Resueltas</span></div>
+          <div>0% <span style="font-weight:400;color:var(--text-muted);">Tasa</span></div>
+          <div>— <span style="font-weight:400;color:var(--text-muted);">Días</span></div>
+        </div>
+      </div>
+    </div>
+
+    <ul style="list-style:none;margin-top:14px;font-size:11px;line-height:2;">
+      <li>• La landing presenta el sistema y permite iniciar sesión con Google</li>
+      <li>• Las estadísticas de gestión se muestran en tiempo real</li>
+      <li>• No se requiere registro para ver el portal de transparencia</li>
+    </ul>
+
+    <p style="font-size:11px;font-weight:800;margin:22px 0 8px;">Pantalla de login</p>
+    <div class="browser-frame" style="width:65%;">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">ticketera-nine.vercel.app/login</div>
+      </div>
+      <div class="browser-body" style="display:flex;flex-direction:column;align-items:center;padding:26px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--naranja),var(--azul));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;border:2px solid #fff;box-shadow:0 0 0 1px var(--card-border);">JC</div>
+        <div style="font-size:13px;font-weight:800;margin-top:10px;">Unidos Hacemos</div>
+        <div style="font-size:9px;color:var(--text-muted);margin-top:3px;">José Corral · Diputado Provincial · Santa Fe</div>
+        <div style="margin-top:14px;border:1px solid var(--card-border);border-radius:6px;padding:7px 16px;font-size:9.5px;font-weight:700;display:flex;align-items:center;gap:6px;">
+          <i class="ti ti-brand-google"></i> Continuar con Google
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 4 — SECCIÓN 2: CIUDADANO CON SESIÓN (PARTE 1) -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Flujo del ciudadano</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">02 · Flujo del ciudadano</p>
+    <h1 class="page-title">Registrar una consulta</h1>
+
+    <div class="flow-timeline">
+      <div class="flow-step"><div class="flow-circle">1</div><div class="flow-label">Login</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><div class="flow-circle">2</div><div class="flow-label">Perfil</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><div class="flow-circle">3</div><div class="flow-label">Categoría</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><div class="flow-circle">4</div><div class="flow-label">Detalle</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><div class="flow-circle">5</div><div class="flow-label">Confirmar</div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><div class="flow-circle">6</div><div class="flow-label">¡Enviado!</div></div>
+    </div>
+
+    <div class="cols-3">
+      <div class="mock-card">
+        <div class="stepper"><div class="dot active"></div><div class="bar"></div><div class="dot"></div><div class="bar"></div><div class="dot"></div></div>
+        <h4>¿Sobre qué es tu consulta?</h4>
+        <div class="mock-chip selected">Infraestructura ✓</div>
+        <div class="mock-chip">Salud</div>
+        <div class="mock-chip">Espacios públicos</div>
+        <div class="mock-chip">Educación</div>
+        <div class="mock-chip">Social</div>
+        <div class="mock-chip">Otro</div>
+      </div>
+      <div class="mock-card">
+        <div class="stepper"><div class="dot active"></div><div class="bar" style="background:var(--naranja);"></div><div class="dot active"></div><div class="bar"></div><div class="dot"></div></div>
+        <h4>Contanos qué pasó</h4>
+        <div class="mock-input-label">Título</div>
+        <div class="mock-input">Bache en Av. Freyre...</div>
+        <div class="mock-input-label">Descripción</div>
+        <div class="mock-input">Hay un bache...</div>
+        <div class="mock-input-label">Localidad</div>
+        <div class="mock-input">Santa Fe Capital</div>
+        <div class="mock-btn-outline"><i class="ti ti-camera"></i> Adjuntar foto</div>
+      </div>
+      <div class="mock-card">
+        <div class="stepper"><div class="dot active"></div><div class="bar" style="background:var(--naranja);"></div><div class="dot active"></div><div class="bar" style="background:var(--naranja);"></div><div class="dot active"></div></div>
+        <h4>Confirmá tu consulta</h4>
+        <div class="mock-chip selected">Infraestructura</div>
+        <div style="font-size:9.5px;font-weight:700;margin:8px 0 4px;">Bache en Av. Freyre y Salta</div>
+        <div style="font-size:9px;color:var(--text-muted);">Localidad: Santa Fe Capital</div>
+        <div style="font-size:9px;margin-top:8px;display:flex;align-items:center;gap:5px;"><i class="ti ti-square-check-filled" style="color:var(--naranja);"></i> Confirmo que es correcto</div>
+        <div class="mock-btn">Enviar consulta</div>
+      </div>
+    </div>
+
+    <div class="success-box">
+      <div class="success-check"><i class="ti ti-check"></i></div>
+      <h3>¡Tu consulta fue enviada!</h3>
+      <p>Recibiste un email de confirmación con el número de caso <strong>#UH-2026-0124</strong></p>
+      <div style="margin-top:10px;display:flex;justify-content:center;gap:8px;">
+        <span class="status-pill status-nuevo">Nuevo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 5 — SECCIÓN 2: CIUDADANO CON SESIÓN (PARTE 2) -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Flujo del ciudadano</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">02 · Flujo del ciudadano</p>
+    <h1 class="page-title">Seguimiento de consultas</h1>
+
+    <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Listado "Mis consultas"</p>
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">ticketera-nine.vercel.app/ciudadano/mis-consultas</div>
+      </div>
+      <div class="browser-body">
+        <div class="list-header">
+          <span>MIS CONSULTAS</span>
+          <div class="mock-btn">+ Nueva consulta</div>
+        </div>
+        <div class="ticket-row">
+          <span class="status-pill status-nuevo">Nuevo</span>
+          <div class="info"><b>Bache en Av. Freyre y Salta</b><span>Infraestructura · hace 2 horas</span></div>
+        </div>
+        <div class="ticket-row">
+          <span class="status-pill status-revision">En revisión</span>
+          <div class="info"><b>Falta de luminaria en mi barrio</b><span>Espacios públicos · hace 3 días</span></div>
+        </div>
+        <div class="ticket-row" style="border-bottom:none;">
+          <span class="status-pill status-resuelto">Resuelto</span>
+          <div class="info"><b>Consulta sobre becas escolares</b><span>Educación · hace 1 semana</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;font-weight:800;margin:18px 0 8px;">Detalle de consulta con línea de tiempo</p>
+    <div class="detail-split">
+      <div class="detail-main">
+        <div class="cat">Infraestructura · Pedido</div>
+        <h3>Bache en Av. Freyre y Salta</h3>
+        <p class="desc">Hay un bache de grandes dimensiones...</p>
+        <div class="tl-title">LÍNEA DE TIEMPO</div>
+        <div class="tl-item done"><i class="ti ti-circle-check-filled tl-icon"></i><div>Consulta recibida<span class="tl-date">1 jul · 08:30</span></div></div>
+        <div class="tl-item done"><i class="ti ti-circle-check-filled tl-icon"></i><div>En revisión<span class="tl-date">2 jul · 10:00</span></div></div>
+        <div class="tl-item done"><i class="ti ti-circle-check-filled tl-icon"></i><div>Derivado a Obras Públicas<span class="tl-date">3 jul · 09:00</span></div></div>
+        <div class="tl-item pending"><i class="ti ti-clock tl-icon"></i><div>En gestión...</div></div>
+      </div>
+      <div class="detail-side">
+        <div class="side-block">
+          <h5>Estado actual</h5>
+          <span class="status-pill status-gestion">En gestión</span>
+        </div>
+        <div class="likes-box">
+          <i class="ti ti-heart-filled" style="color:var(--naranja);"></i> 12 vecinos apoyaron esta consulta
+          <div class="mock-btn">Apoyar esta consulta</div>
+        </div>
+      </div>
+    </div>
+
+    <ul style="list-style:none;margin-top:16px;font-size:11px;line-height:2;">
+      <li>• El ciudadano puede ver el estado actualizado en cualquier momento</li>
+      <li>• Las notas internas del equipo no son visibles para el ciudadano</li>
+      <li>• Puede dar adhesión a consultas de otros vecinos para indicar prioridad</li>
+      <li>• Recibe un email automático al crear la consulta</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 6 — SECCIÓN 3: DASHBOARD DEL EQUIPO (PARTE 1) -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Panel interno</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">03 · Panel interno del equipo</p>
+    <h1 class="page-title">Gestión de consultas</h1>
+    <span class="badge badge-restricted"><i class="ti ti-lock"></i> Acceso restringido · Solo operadores registrados</span>
+
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">ticketera-nine.vercel.app/equipo/consultas</div>
+      </div>
+      <div class="dash-frame">
+        <div class="dash-sidebar">
+          <div class="dash-logo"><img src="../brand/logo-blanco.png" alt=""> Panel</div>
+          <div class="dash-nav-item active"><i class="ti ti-list-details"></i> Consultas</div>
+          <div class="dash-nav-item"><i class="ti ti-chart-bar"></i> KPIs</div>
+          <div class="dash-nav-item"><i class="ti ti-users"></i> Equipo</div>
+          <div class="dash-user"><div class="dash-avatar">JL</div> Julia Lell</div>
+        </div>
+        <div class="dash-content">
+          <div class="dash-content-header">
+            <span>CONSULTAS</span>
+            <div class="dash-filter">Filtros ▼</div>
+          </div>
+          <table class="dash-table">
+            <tr><th>#</th><th>Título</th><th>Ciudadano</th><th>Estado</th><th>Prioridad</th></tr>
+            <tr><td>124</td><td>Bache en Av. Freyre...</td><td>R. Alsina</td><td><span class="status-pill status-nuevo">Nuevo</span></td><td><span class="priority-pill priority-alta">Alta</span></td></tr>
+            <tr><td>123</td><td>Turnos de vacunación</td><td>M. González</td><td><span class="status-pill status-revision">Revisión</span></td><td><span class="priority-pill priority-media">Media</span></td></tr>
+            <tr><td>122</td><td>Comedor comunitario</td><td>C. Ruiz</td><td><span class="status-pill status-gestion">Gestión</span></td><td><span class="priority-pill priority-alta">Alta</span></td></tr>
+            <tr><td>121</td><td>Techos en Barrio Sur</td><td>L. Pérez</td><td><span class="status-pill status-resuelto">Resuelto</span></td><td><span class="priority-pill priority-media">Media</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-title" style="margin-top:22px;">Descripción de funcionalidades</p>
+    <ul class="feature-list">
+      <li><i class="ti ti-check"></i> Listado completo de todas las consultas con filtros por estado, área, prioridad y responsable</li>
+      <li><i class="ti ti-check"></i> Paginación de 20 consultas por página</li>
+      <li><i class="ti ti-check"></i> Click en cualquier fila para ver el detalle completo</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 7 — SECCIÓN 3: DASHBOARD DEL EQUIPO (PARTE 2) -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Panel interno</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">03 · Panel interno del equipo</p>
+    <h1 class="page-title">Detalle y gestión</h1>
+
+    <div class="detail-split">
+      <div class="detail-main">
+        <div class="cat">Infraestructura · Pedido</div>
+        <h3>Bache grande en Av. Freyre y Salta</h3>
+        <p class="desc">Hay un bache de grandes dimensiones...</p>
+        <div class="mock-chip"><i class="ti ti-photo"></i> Foto adjunta</div>
+
+        <div class="tl-title" style="margin-top:12px;">LÍNEA DE TIEMPO COMPLETA</div>
+        <div class="tl-item done"><i class="ti ti-circle-check-filled tl-icon"></i><div>Consulta recibida<span class="tl-date">1 jul</span></div></div>
+        <div class="tl-item done"><i class="ti ti-circle-check-filled tl-icon"></i><div>Derivado a Obras Públicas<span class="tl-date">3 jul</span></div></div>
+
+        <div class="internal-note">
+          <div class="lock-label"><i class="ti ti-lock"></i> No visible para el ciudadano</div>
+          Se coordinó inspección para el jueves...
+          <div class="mock-btn" style="display:inline-block;margin-top:8px;padding:5px 12px;">Guardar nota</div>
+        </div>
+
+        <div class="tl-title">RESPUESTA AL CIUDADANO</div>
+        <div class="response-box">Escribí una respuesta...</div>
+        <div class="response-actions">
+          <span>Acuse de recibo</span><span class="on">En gestión</span><span>Resuelto</span>
+        </div>
+        <div class="mock-btn" style="display:inline-block;padding:7px 14px;">Enviar respuesta</div>
+      </div>
+      <div class="detail-side">
+        <div class="side-block">
+          <h5>Asignado a</h5>
+          <div class="val">JL · Julia Lell</div>
+          <div style="font-size:9px;color:var(--text-muted);">Obras Públicas</div>
+          <div class="mock-btn-outline" style="margin-top:6px;">Reasignar</div>
+        </div>
+        <div class="side-block">
+          <h5>Estado</h5>
+          <div class="mock-input" style="margin-bottom:6px;">En gestión ▼</div>
+          <div class="mock-btn-outline">Cambiar estado</div>
+        </div>
+        <div class="side-block">
+          <h5>Prioridad</h5>
+          <span class="priority-pill priority-alta">Alta</span>
+        </div>
+        <div class="side-block">
+          <h5>Datos del ciudadano</h5>
+          <div style="font-size:9.5px;line-height:1.8;">
+            Nombre: Rodrigo Alsina<br>
+            Email: rodrigo@gmail.com ✉<br>
+            Barrio: Candioti Norte<br>
+            DNI: 42.801.234<br>
+            Sexo: Masculino
+          </div>
+        </div>
+        <div class="side-block">
+          <h5>Adhesiones</h5>
+          <div style="font-size:10px;"><i class="ti ti-heart-filled" style="color:var(--naranja);"></i> 12 vecinos apoyaron</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout-box">
+      <ul class="feature-list">
+        <li><i class="ti ti-check"></i> Notas internas entre operadores — invisibles para el ciudadano</li>
+        <li><i class="ti ti-check"></i> Asignación a cualquier miembro del equipo con nota de traspaso</li>
+        <li><i class="ti ti-check"></i> Cambio de estado con auditoría automática (quién, cuándo, qué)</li>
+        <li><i class="ti ti-check"></i> Acceso al email del ciudadano para contacto externo</li>
+        <li style="border-bottom:none;"><i class="ti ti-check"></i> Plantillas de respuesta rápida predefinidas</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 8 — SECCIÓN 3: KPIS Y GESTIÓN DEL EQUIPO -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Panel interno</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">03 · Panel interno</p>
+    <h1 class="page-title">KPIs y gestión del equipo</h1>
+
+    <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Panel de KPIs</p>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="num">127</div><div class="label">Total consultas</div></div>
+      <div class="kpi-card"><div class="num">12</div><div class="label">Nuevas hoy</div></div>
+      <div class="kpi-card"><div class="num">3.4d</div><div class="label">Tiempo promedio</div></div>
+      <div class="kpi-card"><div class="num">893</div><div class="label">Resueltas</div></div>
+      <div class="kpi-card"><div class="num">72%</div><div class="label">Tasa de resolución</div></div>
+      <div class="kpi-card"><div class="num">4</div><div class="label">Alta prioridad</div></div>
+    </div>
+
+    <p style="font-size:11px;font-weight:800;margin-bottom:8px;">Gestión de miembros (solo admin)</p>
+    <span class="badge badge-admin"><i class="ti ti-shield-lock"></i> Solo visible para administradores</span>
+    <table class="team-table">
+      <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Área</th><th>Estado</th></tr>
+      <tr><td>Julia Lell</td><td>julia@gmail.com</td><td><span class="role-tag">Operador</span></td><td>Obras Públicas</td><td><span class="status-dot">Activo</span></td></tr>
+      <tr><td>Ana López</td><td>ana@gmail.com</td><td><span class="role-tag">Operador</span></td><td>Salud</td><td><span class="status-dot">Activo</span></td></tr>
+      <tr><td>Marcos Díaz</td><td>marcos@gmail.com</td><td><span class="role-tag">Operador</span></td><td>Social</td><td><span class="status-dot">Activo</span></td></tr>
+      <tr><td>Pedro Gómez</td><td>pedro@gmail.com</td><td><span class="role-tag admin">Admin</span></td><td>General</td><td><span class="status-dot">Activo</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 9 — SECCIÓN 4: PORTAL DE TRANSPARENCIA -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Transparencia</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">04 · Portal de transparencia pública</p>
+    <h1 class="page-title">Sin registro</h1>
+    <span class="badge badge-public"><i class="ti ti-lock-open"></i> Acceso público · Sin registro · Sin datos personales</span>
+
+    <div class="browser-frame" style="margin-top:10px;">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">ticketera-nine.vercel.app/transparencia</div>
+      </div>
+      <div class="browser-body" style="padding:16px;">
+        <div class="transp-header">
+          <h2>TRANSPARENCIA DE GESTIÓN</h2>
+          <p>Estado en tiempo real · Equipo del Diputado José Corral</p>
+        </div>
+
+        <div class="transp-kpis">
+          <div class="transp-kpi"><div class="num">1.240</div><div class="label">Recibidas</div></div>
+          <div class="transp-kpi"><div class="num">893</div><div class="label">Resueltas</div></div>
+          <div class="transp-kpi"><div class="num">72%</div><div class="label">Tasa</div></div>
+          <div class="transp-kpi"><div class="num">3.4d</div><div class="label">Promedio</div></div>
+        </div>
+
+        <div class="bar-chart">
+          <h4>Consultas por categoría</h4>
+          <div class="bar-row"><div class="bar-label">Infraestructura</div><div class="bar-track"><div class="bar-fill" style="width:100%;"></div></div><div class="bar-value">387</div></div>
+          <div class="bar-row"><div class="bar-label">Social</div><div class="bar-track"><div class="bar-fill" style="width:67%;"></div></div><div class="bar-value">258</div></div>
+          <div class="bar-row"><div class="bar-label">Espacios públicos</div><div class="bar-track"><div class="bar-fill" style="width:49%;"></div></div><div class="bar-value">189</div></div>
+          <div class="bar-row"><div class="bar-label">Salud</div><div class="bar-track"><div class="bar-fill" style="width:36%;"></div></div><div class="bar-value">140</div></div>
+          <div class="bar-row"><div class="bar-label">Educación</div><div class="bar-track"><div class="bar-fill" style="width:23%;"></div></div><div class="bar-value">88</div></div>
+        </div>
+
+        <div class="bar-chart">
+          <h4>Evolución mensual</h4>
+          <div class="line-chart">
+            <div class="col-bar" style="height:18%;"></div>
+            <div class="col-bar" style="height:32%;"></div>
+            <div class="col-bar" style="height:48%;"></div>
+            <div class="col-bar" style="height:64%;"></div>
+            <div class="col-bar" style="height:82%;"></div>
+            <div class="col-bar" style="height:100%;"></div>
+          </div>
+          <div class="line-chart-labels">
+            <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span>
+          </div>
+        </div>
+
+        <div class="resolved-list">
+          <h4>Últimos casos resueltos</h4>
+          <div class="resolved-item"><i class="ti ti-circle-check-filled"></i><div>Reparación de luminaria en Bv. Pellegrini <span class="r-cat">· Espacios públicos · 1 jul</span></div></div>
+          <div class="resolved-item"><i class="ti ti-circle-check-filled"></i><div>Poda de árboles en Barrio Sur <span class="r-cat">· Espacios públicos · 30 jun</span></div></div>
+          <div class="resolved-item"><i class="ti ti-circle-check-filled"></i><div>Entrega de material escolar en Escuela N°32 <span class="r-cat">· Educación · 29 jun</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <i class="ti ti-shield-check"></i> Los datos son públicos pero nunca se exponen datos personales de los ciudadanos.
+      Cumple con la Ley 25.326 de Protección de Datos Personales.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 10 — SEGURIDAD Y DATOS TÉCNICOS -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="page-header">
+    <img src="../brand/logo-blanco.png" alt="logo">
+    <span>Seguridad y tecnología</span>
+  </div>
+  <div class="page-inner">
+    <p class="section-title">05 · Datos técnicos</p>
+    <h1 class="page-title">Seguridad, privacidad y datos técnicos</h1>
+
+    <div class="sec-cols">
+      <div class="sec-col">
+        <h4><i class="ti ti-lock" style="color:var(--naranja);"></i> SEGURIDAD</h4>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Login exclusivo con Google</div><div class="d">No se manejan contraseñas</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">RLS (Row Level Security)</div><div class="d">Cada usuario solo ve sus datos</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Validación server-side</div><div class="d">Todos los inputs validados con Zod</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Storage privado</div><div class="d">Adjuntos accesibles solo con URLs firmadas (expiran en 1 hora)</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Headers de seguridad HTTP</div><div class="d">X-Frame-Options, CSP, etc.</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Rate limiting</div><div class="d">Máx. 5 consultas por ciudadano cada 24 horas</div></div></div>
+      </div>
+      <div class="sec-col">
+        <h4><i class="ti ti-scale" style="color:var(--azul);"></i> LEY 25.326</h4>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Consentimiento explícito</div><div class="d">Con timestamp guardado en DB</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Datos mínimos necesarios</div><div class="d">Solo nombre, email, DNI, teléfono</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Almacenamiento en Sudamérica</div><div class="d">Servidores en São Paulo, Brasil</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Portal de transparencia</div><div class="d">Sin exposición de datos personales</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Derecho de eliminación</div><div class="d">Disponible a pedido del ciudadano</div></div></div>
+        <div class="sec-item"><i class="ti ti-check"></i><div><div class="t">Vista segura de estadísticas</div><div class="d">security_invoker = true en DB</div></div></div>
+      </div>
+    </div>
+
+    <p class="section-title" style="margin-top:8px;">Stack tecnológico</p>
+    <table class="stack-table">
+      <tr><td>Framework</td><td>Next.js 16 · TypeScript · App Router</td></tr>
+      <tr><td>Base de datos</td><td>Supabase (PostgreSQL) · São Paulo</td></tr>
+      <tr><td>Autenticación</td><td>Google OAuth 2.0</td></tr>
+      <tr><td>Hosting</td><td>Vercel (CDN global)</td></tr>
+      <tr><td>Email</td><td>Resend (acuse de recibo automático)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PÁGINA 11 — CIERRE Y CONTACTO -->
+<!-- ============================================================ -->
+<div class="page">
+  <div class="closing">
+    <img class="logo" src="../brand/logo-blanco.png" alt="Unidos Hacemos">
+    <h1>Unidos Hacemos</h1>
+    <p class="subtitle">Sistema en producción · Julio 2026</p>
+    <div class="divider"></div>
+    <div class="url">https://ticketera-nine.vercel.app</div>
+    <div class="divider"></div>
+    <p class="dev-by">Desarrollado por</p>
+    <p class="dev-name">SCdev · Santiago Cáceres</p>
+    <p class="dev-url">scdev.com.ar</p>
+    <p class="dev-email">1caceres.santiago5@gmail.com</p>
+  </div>
+</div>
+
+</body>
+</html>

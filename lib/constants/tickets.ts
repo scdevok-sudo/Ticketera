@@ -24,7 +24,7 @@ export const CATEGORY_ICONS: Record<string, string> = Object.fromEntries(
 )
 
 export const TIPO_TRAMITE_LABELS: Record<string, string> = {
-  reclamo: 'Reclamo',
+  reclamo: 'Pedido',
   pedido: 'Pedido',
   pregunta: 'Pregunta',
 }

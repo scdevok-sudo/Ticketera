@@ -121,7 +121,7 @@ export default async function TransparenciaPage() {
             </span>
           </div>
           <p className="mt-1 text-sm text-gray-500">
-            Estadísticas públicas de reclamos, pedidos y consultas gestionados por el equipo del diputado.
+            Estadísticas públicas de consultas y pedidos gestionados por el equipo del diputado.
           </p>
 
           <Suspense fallback={<StatsSkeleton />}>
