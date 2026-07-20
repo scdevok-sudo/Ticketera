@@ -197,6 +197,58 @@ export async function removeLike(ticketId: string) {
   return { success: true }
 }
 
+export async function getConsultasPublicas(page = 1, pageSize = 20) {
+  const supabase = await createClient()
+  const user = await getUser()
+  if (!user) return { consultas: [], total: 0 }
+
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  const { data, count } = await supabase
+    .from('tickets')
+    .select(
+      `
+      id,
+      title,
+      category,
+      type,
+      localidad,
+      status,
+      likes_count,
+      created_at,
+      citizen_id
+    `,
+      { count: 'exact' }
+    )
+    .eq('is_public', true)
+    .neq('citizen_id', user.id)
+    .order('likes_count', { ascending: false })
+    .order('created_at', { ascending: false })
+    .range(from, to)
+
+  // Para cada ticket, verificar si el usuario ya dio adhesión
+  const ticketIds = (data ?? []).map((t) => t.id)
+  let likedIds: string[] = []
+  if (ticketIds.length > 0) {
+    const { data: likes } = await supabase
+      .from('ticket_likes')
+      .select('ticket_id')
+      .eq('citizen_id', user.id)
+      .in('ticket_id', ticketIds)
+    likedIds = (likes ?? []).map((l) => l.ticket_id)
+  }
+
+  const consultas = (data ?? []).map((t) => ({
+    ...t,
+    status: t.status ?? 'nuevo',
+    likes_count: t.likes_count ?? 0,
+    hasLiked: likedIds.includes(t.id),
+  }))
+
+  return { consultas, total: count ?? 0 }
+}
+
 // ---- Equipo (dashboard interno) ----
 
 export interface TicketFilters {

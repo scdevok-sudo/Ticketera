@@ -124,16 +124,10 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <KpiCard valor={stats.total} label="Consultas recibidas" icono="ticket" />
           <KpiCard valor={stats.resueltos} label="Casos resueltos" icono="check" />
           <KpiCard valor={stats.tasaResolucion} sufijo="%" label="Tasa de resolución" icono="percentage" />
-          <KpiCard
-            valor={stats.promedioDias > 0 ? stats.promedioDias : '—'}
-            sufijo={stats.promedioDias > 0 ? ' días' : ''}
-            label="Tiempo promedio de resolución"
-            icono="clock"
-          />
         </div>
       </section>
 

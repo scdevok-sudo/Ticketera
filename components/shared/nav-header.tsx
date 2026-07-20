@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import { SignOutButton } from '@/components/ui/sign-out-button'
 import { Icon } from '@/components/ui/icon'
 
-type TabKey = 'mis-reclamos' | 'nuevo-reclamo' | 'transparencia' | 'registrar'
+type TabKey = 'mis-reclamos' | 'consultas-vecinos' | 'nuevo-reclamo' | 'transparencia' | 'registrar'
 
 interface Tab {
   key: TabKey
@@ -28,6 +28,7 @@ const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
   ],
   ciudadano: [
     { key: 'mis-reclamos', label: 'Mis consultas', href: '/ciudadano/mis-reclamos' },
+    { key: 'consultas-vecinos', label: 'Consultas de vecinos', href: '/ciudadano/consultas' },
     { key: 'nuevo-reclamo', label: 'Nueva consulta', href: '/ciudadano/nuevo-reclamo' },
     { key: 'transparencia', label: 'Transparencia pública', href: '/transparencia' },
   ],
