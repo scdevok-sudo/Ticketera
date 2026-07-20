@@ -223,6 +223,7 @@ export async function getConsultasPublicas(page = 1, pageSize = 20) {
     )
     .eq('is_public', true)
     .neq('citizen_id', user.id)
+    .neq('status', 'resuelto')
     .order('likes_count', { ascending: false })
     .order('created_at', { ascending: false })
     .range(from, to)
