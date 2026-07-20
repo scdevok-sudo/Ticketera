@@ -20,9 +20,9 @@ const NotaInternaSchema = z.object({
 export async function addNotaInterna(ticketId: string, content: string): Promise<EquipoActionState> {
   const supabase = await createClient()
   const user = await getUser()
-  if (!user) return { error: 'No autorizado' }
+  if (!user) return { error: 'No autorizado — sin usuario' }
   const teamMember = await getTeamMember()
-  if (!teamMember) return { error: 'No autorizado' }
+  if (!teamMember) return { error: 'No autorizado — sin team member' }
 
   const parsed = NotaInternaSchema.safeParse({ ticket_id: ticketId, content })
   if (!parsed.success) return { error: parsed.error.issues[0].message }
@@ -35,7 +35,7 @@ export async function addNotaInterna(ticketId: string, content: string): Promise
     is_internal: true,
   })
 
-  if (error) return { error: 'No se pudo guardar la nota' }
+  if (error) return { error: `DB Error: ${error.code} - ${error.message}` }
 
   revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
   return {}
