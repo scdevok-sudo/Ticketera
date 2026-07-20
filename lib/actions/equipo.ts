@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
-import { STATUS_LABELS, PRIORITY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
+import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
 
@@ -429,6 +429,41 @@ export async function agregarMiembro(email: string, role: string, area: string):
   if (error) return { error: 'No se pudo agregar el miembro' }
 
   revalidatePath('/equipo/equipo')
+  return {}
+}
+
+const CambiarCategoriaSchema = z.object({
+  ticket_id: z.string().uuid(),
+  category: z.string().min(1),
+})
+
+export async function cambiarCategoria(ticketId: string, category: string): Promise<EquipoActionState> {
+  const supabase = await createClient()
+  const user = await getUser()
+  if (!user) return { error: 'No autorizado' }
+  const teamMember = await getTeamMember()
+  if (!teamMember) return { error: 'No autorizado' }
+
+  const parsed = CambiarCategoriaSchema.safeParse({ ticket_id: ticketId, category })
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const { error } = await supabase
+    .from('tickets')
+    .update({ category: parsed.data.category, updated_at: new Date().toISOString() })
+    .eq('id', parsed.data.ticket_id)
+
+  if (error) return { error: 'No se pudo cambiar la categoría' }
+
+  await supabase.from('ticket_events').insert({
+    ticket_id: parsed.data.ticket_id,
+    author_id: user.id,
+    type: 'internal_note',
+    content: `Categoría corregida a: ${CATEGORY_LABELS[parsed.data.category] ?? parsed.data.category}`,
+    is_internal: true,
+  })
+
+  revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
+  revalidatePath('/equipo/tickets')
   return {}
 }
 

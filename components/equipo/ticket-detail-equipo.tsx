@@ -7,6 +7,7 @@ import {
 } from '@/lib/constants/tickets'
 import { StatusBadgeEquipo, PriorityBadge } from '@/components/equipo/badges'
 import { CambiarEstado } from '@/components/equipo/cambiar-estado'
+import { CambiarCategoria } from '@/components/equipo/cambiar-categoria'
 import { AsignarTicket } from '@/components/equipo/asignar-ticket'
 import { NotaInterna } from '@/components/equipo/nota-interna'
 import { PublicoToggle } from '@/components/equipo/publico-toggle'
@@ -240,6 +241,11 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
                 </dd>
               </div>
             </dl>
+          </div>
+
+          <div className="rounded-lg bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-sm font-bold text-gray-900">Categoría</h2>
+            <CambiarCategoria ticketId={ticket.id} currentCategory={ticket.category} />
           </div>
 
           <div className="rounded-lg bg-white p-5 shadow-sm">

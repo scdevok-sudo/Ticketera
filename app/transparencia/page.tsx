@@ -21,24 +21,18 @@ async function StatsSection() {
   const stats = await getStatsPublicas()
 
   return (
-    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
       <KpiCard valor={stats.total} label="Total de consultas recibidas" icono="ticket" />
       <KpiCard valor={stats.resueltos} label="Casos resueltos" icono="check" />
       <KpiCard valor={stats.tasaResolucion} sufijo="%" label="Tasa de resolución" icono="percentage" />
-      <KpiCard
-        valor={stats.promedioDias > 0 ? stats.promedioDias : '—'}
-        sufijo={stats.promedioDias > 0 ? ' días' : ''}
-        label="Tiempo promedio de resolución"
-        icono="clock"
-      />
     </div>
   )
 }
 
 function StatsSkeleton() {
   return (
-    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, i) => (
+    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {Array.from({ length: 3 }).map((_, i) => (
         <SkeletonCard key={i} height={96} />
       ))}
     </div>
@@ -116,9 +110,6 @@ export default async function TransparenciaPage() {
         <section>
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-xl font-extrabold text-gray-900">Transparencia en tiempo real</h1>
-            <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-brand-naranja">
-              Acceso público · Sin registro requerido
-            </span>
           </div>
           <p className="mt-1 text-sm text-gray-500">
             Estadísticas públicas de consultas y pedidos gestionados por el equipo del diputado.
@@ -154,7 +145,6 @@ export default async function TransparenciaPage() {
 
         <section className="mt-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
           <h2 className="text-sm font-bold text-gray-900">Últimos casos resueltos</h2>
-          <p className="mt-0.5 text-xs text-gray-400">Sin datos personales — solo información del trámite</p>
 
           <div className="mt-3">
             <Suspense fallback={<ListaSkeleton />}>

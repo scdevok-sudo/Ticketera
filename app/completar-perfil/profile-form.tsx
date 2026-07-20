@@ -3,9 +3,7 @@
 import { useActionState, useState } from 'react'
 import { completeProfile, type ProfileFormState } from '@/lib/actions/profiles'
 import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
-import { LOCALIDADES } from '@/lib/constants/localidades'
-
-const CAPITAL = 'Santa Fe Capital'
+import { BARRIOS_CAPITAL, LOCALIDADES_PROVINCIA, getDepartamento } from '@/lib/constants/localidades'
 
 const SEXO_OPTIONS = [
   { value: 'masculino', label: 'Masculino' },
@@ -20,14 +18,26 @@ export function ProfileForm() {
   const [state, formAction, isPending] = useActionState(completeProfile, initialState)
   const [dni, setDni] = useState('')
   const [phone, setPhone] = useState('')
+  const [localidadTipo, setLocalidadTipo] = useState<'capital' | 'provincia' | ''>('')
   const [localidad, setLocalidad] = useState('')
   const [consent, setConsent] = useState(false)
 
-  const localidadTipo = localidad === CAPITAL ? 'capital' : localidad ? 'provincia' : ''
+  function handleTipoChange(tipo: 'capital' | 'provincia') {
+    setLocalidadTipo(tipo)
+    setLocalidad('')
+  }
+
+  const departamento = localidadTipo === 'provincia' ? getDepartamento(localidad) ?? '' : ''
 
   const dniValid = /^[0-9]{7,8}$/.test(dni)
   const phoneValid = /^[0-9]{10}$/.test(phone)
-  const isValid = dniValid && phoneValid && localidad.trim().length >= 2 && consent
+  const isValid =
+    dniValid &&
+    phoneValid &&
+    localidadTipo !== '' &&
+    localidad.trim().length >= 2 &&
+    (localidadTipo !== 'provincia' || departamento !== '') &&
+    consent
 
   return (
     <form action={formAction} className="space-y-5">
@@ -80,26 +90,50 @@ export function ProfileForm() {
       </div>
 
       <div>
-        <label htmlFor="localidad" className="block text-sm font-medium text-[#1a1a1a]">
-          Localidad
-        </label>
-        <div className="mt-1">
-          <LocalidadSelect
-            id="localidad"
-            name="localidad"
-            value={localidad}
-            onChange={setLocalidad}
-            options={LOCALIDADES}
-            placeholder="Buscar localidad o departamento…"
-          />
+        <label className="block text-sm font-medium text-[#1a1a1a]">Localidad</label>
+        <div className="mt-1.5 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => handleTipoChange('capital')}
+            className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors ${
+              localidadTipo === 'capital'
+                ? 'border-brand-naranja bg-orange-50 text-brand-naranja'
+                : 'border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400'
+            }`}
+          >
+            Santa Fe Capital
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTipoChange('provincia')}
+            className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors ${
+              localidadTipo === 'provincia'
+                ? 'border-brand-naranja bg-orange-50 text-brand-naranja'
+                : 'border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400'
+            }`}
+          >
+            Otra localidad
+          </button>
         </div>
+
+        {localidadTipo !== '' && (
+          <div className="mt-3">
+            <LocalidadSelect
+              id="localidad"
+              name="localidad"
+              value={localidad}
+              onChange={setLocalidad}
+              options={localidadTipo === 'capital' ? BARRIOS_CAPITAL : LOCALIDADES_PROVINCIA}
+              placeholder={
+                localidadTipo === 'capital' ? 'Buscar barrio…' : 'Buscar localidad…'
+              }
+            />
+          </div>
+        )}
+
         <input type="hidden" name="localidad_tipo" value={localidadTipo} />
         <input type="hidden" name="barrio" value={localidadTipo === 'capital' ? localidad : ''} />
-        <input
-          type="hidden"
-          name="departamento"
-          value={localidadTipo === 'provincia' ? localidad : ''}
-        />
+        <input type="hidden" name="departamento" value={departamento} />
         {(state.fieldErrors?.localidad_tipo ||
           state.fieldErrors?.barrio ||
           state.fieldErrors?.departamento) && (

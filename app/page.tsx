@@ -98,7 +98,7 @@ export default async function Home() {
 
             <div className="hidden sm:block sm:w-[40%]">
               <Image
-                src="/images/jose-corral.png"
+                src="/images/jose-corral1.png"
                 alt="José Corral, Diputado Provincial"
                 width={384}
                 height={393}

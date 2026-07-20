@@ -78,8 +78,15 @@ export function LocalidadSelect({
               <li key={option} role="option" aria-selected={option === value}>
                 <button
                   type="button"
-                  onClick={() => handleSelect(option)}
-                  className="block w-full px-3 py-2 text-left text-sm text-zinc-700 hover:bg-orange-50"
+                  onMouseDown={(e) => {
+                    e.preventDefault() // evita que el input pierda foco antes del tap
+                    handleSelect(option)
+                  }}
+                  onTouchEnd={(e) => {
+                    e.preventDefault() // fallback para Safari iOS en listas scrolleables
+                    handleSelect(option)
+                  }}
+                  className="block w-full px-3 py-2 text-left text-sm text-zinc-700 hover:bg-orange-50 active:bg-orange-100"
                 >
                   {option}
                 </button>

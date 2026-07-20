@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createTicket, type TicketFormState } from '@/lib/actions/tickets'
 import { CATEGORIES, CATEGORY_ICONS, CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
-import { LOCALIDADES } from '@/lib/constants/localidades'
+import { TODAS_LAS_LOCALIDADES } from '@/lib/constants/localidades'
 import { StepIndicator } from '@/components/ciudadano/step-indicator'
 import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
 import { Icon } from '@/components/ui/icon'
@@ -221,7 +221,7 @@ export function NuevoReclamoForm() {
               name="localidad"
               value={localidad}
               onChange={setLocalidad}
-              options={LOCALIDADES}
+              options={TODAS_LAS_LOCALIDADES}
               placeholder="Buscar localidad o departamento…"
             />
           </div>

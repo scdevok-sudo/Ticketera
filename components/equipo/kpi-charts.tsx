@@ -50,7 +50,12 @@ export function KpiCharts({ serieSemanal, porEstado }: KpiChartsProps) {
               label={(entry: any) => STATUS_LABELS[entry.estado] ?? entry.estado}
             >
               {porEstado.map((entry) => (
-                <Cell key={entry.estado} fill={STATUS_CHART_COLORS[entry.estado] ?? '#9CA3AF'} />
+                <Cell
+                  key={entry.estado}
+                  fill={STATUS_CHART_COLORS[entry.estado] ?? '#9CA3AF'}
+                  stroke="white"
+                  strokeWidth={2}
+                />
               ))}
             </Pie>
             <Tooltip
