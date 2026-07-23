@@ -37,6 +37,10 @@ import {
   IconFilter,
   IconLock,
   IconChevronDown,
+  IconMessagePlus,
+  IconQrcode,
+  IconMail,
+  IconUserCheck,
   type Icon as TablerIconType,
   type IconProps,
 } from '@tabler/icons-react'
@@ -80,6 +84,10 @@ const ICONS: Record<string, TablerIconType> = {
   filter: IconFilter,
   lock: IconLock,
   'chevron-down': IconChevronDown,
+  'message-plus': IconMessagePlus,
+  qrcode: IconQrcode,
+  mail: IconMail,
+  'user-check': IconUserCheck,
 }
 
 interface AppIconProps extends IconProps {

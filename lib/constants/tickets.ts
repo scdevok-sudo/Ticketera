@@ -24,8 +24,9 @@ export const CATEGORY_ICONS: Record<string, string> = Object.fromEntries(
 )
 
 export const TIPO_TRAMITE_LABELS: Record<string, string> = {
-  reclamo: 'Pedido',
+  reclamo: 'Consulta',
   pedido: 'Pedido',
+  // Se mantiene el label para tickets históricos con este tipo, aunque ya no se ofrece en el formulario.
   pregunta: 'Pregunta',
 }
 

@@ -1,25 +1,28 @@
 import Link from 'next/link'
 import { getMyTickets } from '@/lib/actions/tickets'
 import { TicketCard } from '@/components/ciudadano/ticket-card'
+import { Icon } from '@/components/ui/icon'
 
 export default async function MisReclamosPage() {
   const tickets = await getMyTickets()
 
   if (tickets.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center">
-        <ClipboardIcon />
-        <h1 className="mt-6 text-lg font-bold text-zinc-800">
-          Todavía no registraste ninguna consulta
-        </h1>
-        <p className="mt-2 max-w-xs text-sm text-zinc-500">
-          Cuando hagas tu primera consulta, vas a poder seguir el estado acá.
+      <div className="flex flex-1 flex-col items-center justify-center px-4 py-20 text-center">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-orange-100">
+          <Icon name="message-plus" size={36} className="text-brand-naranja" />
+        </div>
+        <h1 className="mb-2 text-xl font-bold text-zinc-900">¿En qué te podemos ayudar?</h1>
+        <p className="mb-8 max-w-xs text-sm text-zinc-500">
+          Registrá tu primera consulta o pedido. El equipo del diputado lo recibe y te da
+          seguimiento.
         </p>
         <Link
           href="/ciudadano/nuevo-reclamo"
-          className="mt-6 rounded-lg bg-brand-naranja px-5 py-3 font-semibold text-white transition-colors hover:bg-[#e66800]"
+          className="mb-4 flex items-center gap-2 rounded-xl bg-brand-naranja px-8 py-4 text-lg font-bold text-white shadow-sm transition-colors hover:bg-[#e66800]"
         >
-          Registrar mi primera consulta
+          <Icon name="plus" size={22} />
+          NUEVA CONSULTA
         </Link>
       </div>
     )
@@ -43,26 +46,5 @@ export default async function MisReclamosPage() {
         ))}
       </div>
     </div>
-  )
-}
-
-function ClipboardIcon() {
-  return (
-    <svg
-      width="64"
-      height="64"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#FF7402"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="opacity-60"
-      aria-hidden="true"
-    >
-      <rect x="6" y="4" width="12" height="17" rx="2" />
-      <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
-      <path d="M9 10h6M9 14h6M9 18h3" />
-    </svg>
   )
 }

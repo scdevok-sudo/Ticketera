@@ -5,25 +5,17 @@ import { getUser } from '@/lib/supabase/auth-cache'
 import { NavHeader } from '@/components/shared/nav-header'
 import { KpiCard } from '@/components/shared/kpi-card'
 import { Icon } from '@/components/ui/icon'
-import { GoogleLoginButton } from './login/google-login-button'
 import { getStatsPublicas, type StatsPublicas } from '@/lib/actions/transparencia'
 import { CATEGORIES } from '@/lib/constants/tickets'
+import joseCorralHero from '@/public/images/jose-corral1.png'
 
 const STATS_VACIAS: StatsPublicas = { total: 0, resueltos: 0, tasaResolucion: 0, promedioDias: 0 }
 
 const PASOS = [
-  { icono: 'edit', titulo: 'Registrás', descripcion: 'Contanos tu consulta o pedido en minutos.' },
-  {
-    icono: 'inbox',
-    titulo: 'El equipo lo recibe',
-    descripcion: 'El equipo del diputado lo revisa y lo deriva al área correspondiente.',
-  },
-  {
-    icono: 'eye',
-    titulo: 'Hacés seguimiento',
-    descripcion: 'Mirá el estado de tu caso en tiempo real, cuando quieras.',
-  },
-  { icono: 'circle-check', titulo: 'Se resuelve', descripcion: 'Te avisamos apenas tu caso queda resuelto.' },
+  { icono: 'qrcode', titulo: 'Escaneá el QR', descripcion: 'Apuntá la cámara de tu celular al código QR y accedé al sitio en segundos.' },
+  { icono: 'mail', titulo: 'Ingresá con tu mail', descripcion: 'Usá tu cuenta de Google para identificarte de forma segura y simple.' },
+  { icono: 'user-check', titulo: 'Completá tus datos', descripcion: 'Registrá tu nombre, DNI y localidad una sola vez.' },
+  { icono: 'message-plus', titulo: 'Cargá tu consulta', descripcion: 'Contanos qué necesitás y hacé el seguimiento desde tu celular.' },
 ]
 
 export default async function Home() {
@@ -35,7 +27,7 @@ export default async function Home() {
       ? createClient().then((supabase) =>
           supabase
             .from('profiles')
-            .select('full_name')
+            .select('full_name, profile_complete')
             .eq('id', user.id)
             .single()
             .then(({ data }) => data)
@@ -44,6 +36,10 @@ export default async function Home() {
   ])
 
   const userName = profile?.full_name ?? user?.email ?? undefined
+
+  let ctaHref = '/login'
+  if (user && profile?.profile_complete) ctaHref = '/ciudadano/nuevo-reclamo'
+  else if (user) ctaHref = '/completar-perfil'
 
   return (
     <div className="min-h-screen bg-[#F5F5F3]">
@@ -81,27 +77,19 @@ export default async function Home() {
                 Registrá tu consulta o pedido en minutos. Hacé el seguimiento en tiempo real.
               </p>
               <div className="mt-8 flex justify-center sm:justify-start">
-                {user ? (
-                  <Link
-                    href="/ciudadano/mis-reclamos"
-                    className="rounded-lg bg-white px-6 py-3 font-semibold text-[#2D3077] shadow-sm transition-colors hover:bg-white/90"
-                  >
-                    Ir a mis consultas →
-                  </Link>
-                ) : (
-                  <div className="w-full max-w-xs">
-                    <GoogleLoginButton />
-                  </div>
-                )}
+                <Link
+                  href={ctaHref}
+                  className="rounded-lg bg-[#FF7402] px-8 py-4 text-lg font-bold text-white shadow-sm transition-colors hover:bg-[#e66800]"
+                >
+                  Nueva Consulta
+                </Link>
               </div>
             </div>
 
             <div className="hidden sm:block sm:w-[40%]">
               <Image
-                src="/images/jose-corral1.png"
+                src={joseCorralHero}
                 alt="José Corral, Diputado Provincial"
-                width={384}
-                height={393}
                 priority
                 className="mx-auto h-auto w-full max-w-sm drop-shadow-2xl"
                 style={{
@@ -133,17 +121,15 @@ export default async function Home() {
 
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-[1200px]">
-          <h2 className="text-center text-2xl font-extrabold text-gray-900">Cómo funciona</h2>
+          <h2 className="text-center text-2xl font-extrabold text-gray-900">Cuatro pasos y listo</h2>
           <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {PASOS.map((paso, i) => (
               <div key={paso.titulo} className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange-50">
+                <span className="text-3xl font-extrabold text-brand-naranja">{i + 1}</span>
+                <div className="mx-auto mt-2 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50">
                   <Icon name={paso.icono} size={24} className="text-brand-naranja" />
                 </div>
-                <p className="mt-4 text-xs font-bold uppercase tracking-wide text-brand-naranja">
-                  Paso {i + 1}
-                </p>
-                <h3 className="mt-1 text-base font-bold text-gray-900">{paso.titulo}</h3>
+                <h3 className="mt-4 text-base font-bold text-gray-900">{paso.titulo}</h3>
                 <p className="mt-1 text-sm text-gray-500">{paso.descripcion}</p>
               </div>
             ))}

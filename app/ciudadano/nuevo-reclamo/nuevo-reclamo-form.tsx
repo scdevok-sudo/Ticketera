@@ -8,9 +8,9 @@ import { StepIndicator } from '@/components/ciudadano/step-indicator'
 import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
 import { Icon } from '@/components/ui/icon'
 
-type TipoTramite = 'reclamo' | 'pedido' | 'pregunta'
+type TipoTramite = 'reclamo' | 'pedido'
 
-const TIPOS: TipoTramite[] = ['reclamo', 'pedido', 'pregunta']
+const TIPOS: TipoTramite[] = ['reclamo', 'pedido']
 const initialState: TicketFormState = {}
 
 // Devuelve false en el render de SSR/hidratación y true una vez montado en el
@@ -144,7 +144,7 @@ export function NuevoReclamoForm() {
 
         <div>
           <h2 className="mb-3 text-base font-bold text-zinc-800">¿Qué tipo de trámite es?</h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {TIPOS.map((t) => (
               <button
                 key={t}
