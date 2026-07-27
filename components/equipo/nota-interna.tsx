@@ -32,15 +32,20 @@ export function NotaInterna({ ticketId }: { ticketId: string }) {
     setError(null)
 
     startTransition(async () => {
-      const action = tab === 'interna' ? addNotaInterna : addRespuestaCiudadano
-      const result = await action(ticketId, trimmed)
-      if (result?.error) {
-        setError(result.error)
-        return
+      try {
+        const action = tab === 'interna' ? addNotaInterna : addRespuestaCiudadano
+        const result = await action(ticketId, trimmed)
+        if (result?.error) {
+          setError(result.error)
+          return
+        }
+        setContent('')
+        router.refresh()
+        document.getElementById('timeline-end')?.scrollIntoView({ behavior: 'smooth' })
+      } catch (e) {
+        console.error('Error al enviar:', e)
+        setError('Ocurrió un error al enviar. Intentá de nuevo.')
       }
-      setContent('')
-      router.refresh()
-      document.getElementById('timeline-end')?.scrollIntoView({ behavior: 'smooth' })
     })
   }
 

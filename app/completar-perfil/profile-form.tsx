@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react'
 import { completeProfile, type ProfileFormState } from '@/lib/actions/profiles'
 import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
-import { BARRIOS_CAPITAL, LOCALIDADES_PROVINCIA, getDepartamento } from '@/lib/constants/localidades'
+import { LOCALIDADES_PROVINCIA, getDepartamento } from '@/lib/constants/localidades'
 
 const SEXO_OPTIONS = [
   { value: 'masculino', label: 'Masculino' },
@@ -116,17 +116,29 @@ export function ProfileForm() {
           </button>
         </div>
 
-        {localidadTipo !== '' && (
+        {localidadTipo === 'capital' && (
+          <div className="mt-3">
+            <input
+              id="localidad"
+              name="localidad"
+              type="text"
+              value={localidad}
+              onChange={(e) => setLocalidad(e.target.value)}
+              placeholder="Ej: Barrio Norte, Alto Verde, Candioti..."
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#9CA3AF] focus:border-brand-naranja focus:outline-none focus:ring-1 focus:ring-brand-naranja"
+            />
+          </div>
+        )}
+
+        {localidadTipo === 'provincia' && (
           <div className="mt-3">
             <LocalidadSelect
               id="localidad"
               name="localidad"
               value={localidad}
               onChange={setLocalidad}
-              options={localidadTipo === 'capital' ? BARRIOS_CAPITAL : LOCALIDADES_PROVINCIA}
-              placeholder={
-                localidadTipo === 'capital' ? 'Buscar barrio…' : 'Buscar localidad…'
-              }
+              options={LOCALIDADES_PROVINCIA}
+              placeholder="Buscar localidad…"
             />
           </div>
         )}

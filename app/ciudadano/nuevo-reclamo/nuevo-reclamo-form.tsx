@@ -3,9 +3,7 @@
 import { useActionState, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createTicket, type TicketFormState } from '@/lib/actions/tickets'
 import { CATEGORIES, CATEGORY_ICONS, CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
-import { TODAS_LAS_LOCALIDADES } from '@/lib/constants/localidades'
 import { StepIndicator } from '@/components/ciudadano/step-indicator'
-import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
 import { Icon } from '@/components/ui/icon'
 
 type TipoTramite = 'reclamo' | 'pedido'
@@ -215,16 +213,16 @@ export function NuevoReclamoForm() {
           <label htmlFor="localidad" className="block text-sm font-medium text-[#1a1a1a]">
             Localidad del problema
           </label>
-          <div className="mt-1">
-            <LocalidadSelect
-              id="localidad"
-              name="localidad"
-              value={localidad}
-              onChange={setLocalidad}
-              options={TODAS_LAS_LOCALIDADES}
-              placeholder="Buscar localidad o departamento…"
-            />
-          </div>
+          <input
+            type="text"
+            id="localidad"
+            name="localidad"
+            value={localidad}
+            onChange={(e) => setLocalidad(e.target.value)}
+            placeholder="Ej: Santa Fe, Rosario, Rafaela..."
+            maxLength={100}
+            className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#9CA3AF] focus:border-brand-naranja focus:outline-none focus:ring-1 focus:ring-brand-naranja"
+          />
         </div>
 
         <div>
