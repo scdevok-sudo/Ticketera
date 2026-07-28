@@ -107,11 +107,11 @@ export default async function AyudaPage() {
 
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         <h1 className="text-2xl font-extrabold text-gray-900">
-          {isTeamMember ? 'Panel de ayuda — Equipo interno' : '¿Cómo usar Unidos Hacemos?'}
+          {isTeamMember ? 'Panel de ayuda — Equipo interno' : '¿Cómo usar Unidos Construimos?'}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
           {isTeamMember
-            ? 'Guía de uso del dashboard de Unidos Hacemos'
+            ? 'Guía de uso del dashboard de Unidos Construimos'
             : 'Guía rápida para vecinos de Santa Fe'}
         </p>
 

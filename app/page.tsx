@@ -187,7 +187,7 @@ export default async function Home() {
       <footer className="bg-brand-azul">
         <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-white/80 md:flex-row">
-            <p>© 2026 Unidos Hacemos · Equipo del Diputado José Corral · Santa Fe</p>
+            <p>© 2026 Unidos Construimos · Equipo del Diputado José Corral · Santa Fe</p>
             <div className="flex items-center gap-4">
               <a
                 href="https://josecorral.com.ar"

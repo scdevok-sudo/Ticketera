@@ -11,14 +11,14 @@ export function LogoJC({ size = 32, showText = false, textColor = '#2D3077' }: L
     <div className="flex items-center gap-2">
       <Image
         src="/brand/logo-isotipo.png"
-        alt="Unidos Hacemos"
+        alt="Unidos Construimos"
         width={size}
         height={size}
         className="shrink-0"
       />
       {showText && (
         <span className="font-extrabold" style={{ color: textColor, fontSize: size * 0.5 }}>
-          Unidos Hacemos
+          Unidos Construimos
         </span>
       )}
     </div>

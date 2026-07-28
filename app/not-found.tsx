@@ -12,7 +12,7 @@ export default function NotFound() {
 
       <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">Esta página no existe</h1>
       <p className="mb-8 max-w-sm text-center text-gray-500">
-        La dirección que ingresaste no corresponde a ninguna sección de Unidos Hacemos.
+        La dirección que ingresaste no corresponde a ninguna sección de Unidos Construimos.
       </p>
 
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -32,7 +32,7 @@ export default function NotFound() {
       </div>
 
       <p className="mt-12 text-xs text-gray-400">
-        Unidos Hacemos · Equipo del Diputado José Corral · Santa Fe
+        Unidos Construimos · Equipo del Diputado José Corral · Santa Fe
       </p>
     </div>
   )

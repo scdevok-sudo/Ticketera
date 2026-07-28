@@ -24,7 +24,7 @@ export default async function LoginPage() {
           <LogoJC size={72} />
         </div>
 
-        <h1 className="mt-4 text-2xl font-extrabold text-brand-azul">Unidos Hacemos</h1>
+        <h1 className="mt-4 text-2xl font-extrabold text-brand-azul">Unidos Construimos</h1>
         <p className="mt-1 text-sm text-zinc-500">
           José Corral · Diputado Provincial · Santa Fe
         </p>

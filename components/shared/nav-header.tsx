@@ -54,7 +54,7 @@ export function NavHeader({ variant, activeTab, userName }: NavHeaderProps) {
         <Link href="/" className="shrink-0">
           <Image
             src={logoBlanco}
-            alt="Unidos Hacemos"
+            alt="Unidos Construimos"
             priority
             className="h-8 w-auto sm:h-9"
           />

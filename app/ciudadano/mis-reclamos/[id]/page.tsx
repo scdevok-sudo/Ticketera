@@ -69,7 +69,7 @@ export default async function TicketDetailPage({
       <div className="rounded-lg bg-white p-5 shadow-sm">
         <div className="mb-2 flex items-center justify-between gap-2">
           <StatusBadge status={status} />
-          <span className="text-xs font-semibold text-zinc-400">#UH-{ticketNum}</span>
+          <span className="text-xs font-semibold text-zinc-400">#UC-{ticketNum}</span>
         </div>
         <h1 className="text-lg font-bold text-zinc-800">{ticket.title}</h1>
         <p className="mt-1 text-xs text-zinc-500">

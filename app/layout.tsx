@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Unidos Hacemos | José Corral - Diputado Provincial",
+  title: "Unidos Construimos | José Corral - Diputado Provincial",
   description:
     "Registrá tu consulta o pedido. Tu voz llega directo al equipo del diputado José Corral.",
 };

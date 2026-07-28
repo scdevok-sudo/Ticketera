@@ -24,14 +24,14 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Unidos Hacemos <noreply@unidoshacemos.com.ar>',
+      from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
       to: [to],
       subject: `${typeLabel} recibido — Caso #${ticketNum}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
             <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #FFB002, #2D3077); border: 2px solid white; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; margin-bottom: 12px;">JC</div>
-            <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 800;">Unidos Hacemos</h1>
+            <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 800;">Unidos Construimos</h1>
             <p style="color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 13px;">José Corral · Diputado Provincial · Santa Fe</p>
           </div>
 
@@ -42,7 +42,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
 
           <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
             <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
-            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UH-${ticketNum}</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UC-${ticketNum}</p>
             <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
           </div>
 
@@ -52,7 +52,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
           </a>
 
           <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
-            Unidos Hacemos · scdev.com.ar<br>
+            Unidos Construimos · scdev.com.ar<br>
             Este es un mensaje automático, por favor no respondas este email.
           </p>
         </div>

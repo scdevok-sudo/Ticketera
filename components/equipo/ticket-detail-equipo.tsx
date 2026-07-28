@@ -128,7 +128,7 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <StatusBadgeEquipo status={status} />
               <PriorityBadge priority={priority} />
-              <span className="ml-auto text-xs font-semibold text-gray-400">#UH-{ticketNum}</span>
+              <span className="ml-auto text-xs font-semibold text-gray-400">#UC-{ticketNum}</span>
             </div>
             <h1 className="text-lg font-bold text-gray-900">{ticket.title}</h1>
             <p className="mt-1 text-xs text-gray-500">
