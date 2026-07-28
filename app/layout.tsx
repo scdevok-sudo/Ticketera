@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: "Unidos Construimos | José Corral - Diputado Provincial",
   description:
     "Registrá tu consulta o pedido. Tu voz llega directo al equipo del diputado José Corral.",
+  icons: {
+    icon: "/brand/logo-isotipo.png",
+    apple: "/brand/logo-isotipo.png",
+  },
 };
 
 export default function RootLayout({

@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
+import { sendRespuestaCiudadano } from '@/lib/actions/email'
 
 export type EquipoActionState = {
   error?: string
@@ -65,6 +66,22 @@ export async function addRespuestaCiudadano(ticketId: string, content: string): 
   })
 
   if (error) return { error: 'No se pudo enviar la respuesta' }
+
+  const { data: ticket } = await supabase
+    .from('tickets')
+    .select('title, citizen:profiles!tickets_citizen_id_fkey(email)')
+    .eq('id', parsed.data.ticket_id)
+    .single()
+
+  const citizenEmail = ticket ? unwrapEmbed(ticket.citizen)?.email : null
+  if (ticket && citizenEmail) {
+    await sendRespuestaCiudadano({
+      to: citizenEmail,
+      ticketId: parsed.data.ticket_id,
+      title: ticket.title,
+      respuesta: parsed.data.content,
+    }).catch(() => {})
+  }
 
   revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
   return {}
