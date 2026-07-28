@@ -107,5 +107,5 @@ export async function completeProfile(
     .eq('active', true)
     .single()
 
-  redirect(teamMember ? '/equipo/dashboard' : '/ciudadano')
+  redirect(teamMember ? '/equipo/tickets' : '/ciudadano')
 }

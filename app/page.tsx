@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
-import { getUser } from '@/lib/supabase/auth-cache'
+import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { NavHeader } from '@/components/shared/nav-header'
 import { KpiCard } from '@/components/shared/kpi-card'
 import { Icon } from '@/components/ui/icon'
@@ -21,7 +21,7 @@ const PASOS = [
 export default async function Home() {
   const user = await getUser()
 
-  const [stats, profile] = await Promise.all([
+  const [stats, profile, teamMember] = await Promise.all([
     getStatsPublicas().catch(() => STATS_VACIAS),
     user
       ? createClient().then((supabase) =>
@@ -33,6 +33,7 @@ export default async function Home() {
             .then(({ data }) => data)
         )
       : Promise.resolve(null),
+    user ? getTeamMember() : Promise.resolve(null),
   ])
 
   const userName = profile?.full_name ?? user?.email ?? undefined
@@ -44,7 +45,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#F5F5F3]">
       {user ? (
-        <NavHeader variant="ciudadano" userName={userName} />
+        <NavHeader variant="ciudadano" userName={userName} isTeamMember={!!teamMember} />
       ) : (
         <NavHeader variant="publico" />
       )}

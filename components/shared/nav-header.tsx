@@ -20,6 +20,7 @@ interface NavHeaderProps {
   variant: 'ciudadano' | 'publico'
   activeTab?: TabKey
   userName?: string
+  isTeamMember?: boolean
 }
 
 const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
@@ -38,7 +39,7 @@ const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
 const TAB_CLASS =
   'whitespace-nowrap rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 ease-in-out'
 
-export function NavHeader({ variant, activeTab, userName }: NavHeaderProps) {
+export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHeaderProps) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const tabs = TABS[variant]
@@ -76,6 +77,14 @@ export function NavHeader({ variant, activeTab, userName }: NavHeaderProps) {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          {variant === 'ciudadano' && isTeamMember && (
+            <Link
+              href="/equipo/tickets"
+              className={`${TAB_CLASS} bg-white/15 text-white hover:bg-white/25`}
+            >
+              Panel del equipo
+            </Link>
+          )}
           {variant === 'ciudadano' && userName && (
             <span className="text-[13px] font-medium text-white">{userName}</span>
           )}
@@ -131,6 +140,15 @@ export function NavHeader({ variant, activeTab, userName }: NavHeaderProps) {
               {tab.label}
             </Link>
           ))}
+          {variant === 'ciudadano' && isTeamMember && (
+            <Link
+              href="/equipo/tickets"
+              onClick={() => setOpen(false)}
+              className="border-b border-white/10 px-6 py-4 text-lg text-white/80 transition-colors duration-150 ease-in-out hover:bg-white/10 hover:text-white"
+            >
+              Panel del equipo
+            </Link>
+          )}
         </nav>
 
         {variant === 'ciudadano' && (

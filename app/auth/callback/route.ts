@@ -33,7 +33,7 @@ export async function GET(request: Request) {
           .single()
 
         if (teamMember) {
-          return NextResponse.redirect(`${origin}/equipo/dashboard`)
+          return NextResponse.redirect(`${origin}/equipo/tickets`)
         }
 
         return NextResponse.redirect(`${origin}/ciudadano`)
