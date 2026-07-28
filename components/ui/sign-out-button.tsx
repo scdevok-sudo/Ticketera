@@ -17,7 +17,7 @@ export function SignOutButton() {
     <button
       type="button"
       onClick={handleSignOut}
-      className="rounded-md border border-white/50 px-3 py-1.5 text-sm font-medium text-white transition-colors duration-150 ease-in-out hover:bg-white/10"
+      className="whitespace-nowrap rounded-md border border-white/50 px-3 py-1.5 text-sm font-medium text-white transition-colors duration-150 ease-in-out hover:bg-white/10"
     >
       Cerrar sesión
     </button>

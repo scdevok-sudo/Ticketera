@@ -37,7 +37,7 @@ const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
 }
 
 const TAB_CLASS =
-  'whitespace-nowrap rounded-md px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 ease-in-out'
+  'whitespace-nowrap rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ease-in-out'
 
 export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHeaderProps) {
   const pathname = usePathname()
@@ -61,7 +61,7 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHea
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {tabs.map((tab) => (
             <Link
               key={tab.key}
@@ -76,17 +76,17 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHea
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           {variant === 'ciudadano' && isTeamMember && (
             <Link
               href="/equipo/tickets"
-              className={`${TAB_CLASS} bg-white/15 text-white hover:bg-white/25`}
+              className="whitespace-nowrap rounded-md bg-brand-azul px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 ease-in-out hover:bg-[#242964]"
             >
               Panel del equipo
             </Link>
           )}
           {variant === 'ciudadano' && userName && (
-            <span className="text-[13px] font-medium text-white">{userName}</span>
+            <span className="whitespace-nowrap text-[13px] font-medium text-white">{userName}</span>
           )}
           {variant === 'ciudadano' && <SignOutButton />}
         </div>

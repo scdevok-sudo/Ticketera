@@ -32,7 +32,6 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
             <img src="https://www.unidosconstruimos.com.ar/brand/logo-blanco.png" alt="Unidos Construimos" style="height: 48px; width: auto; margin-bottom: 12px;" />
             <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 800;">Unidos Construimos</h1>
-            <p style="color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 13px;">José Corral · Diputado Provincial · Santa Fe</p>
           </div>
 
           <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 8px;">¡${typeLabel} recibido!</h2>
@@ -97,7 +96,6 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
             <img src="https://www.unidosconstruimos.com.ar/brand/logo-blanco.png" alt="Unidos Construimos" style="height: 48px; width: auto; margin-bottom: 12px;" />
             <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 800;">Unidos Construimos</h1>
-            <p style="color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 13px;">José Corral · Diputado Provincial · Santa Fe</p>
           </div>
 
           <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 8px;">Hay una respuesta a tu consulta</h2>
