@@ -132,8 +132,10 @@ export async function getMyTickets() {
 
   const { data } = await supabase
     .from('tickets')
-    .select('id, title, category, type, status, priority, localidad, created_at, updated_at, likes_count')
-    .eq('citizen_id', user.id)
+    .select(
+      'id, title, category, type, status, priority, localidad, created_at, updated_at, likes_count, contact_name, contact_email'
+    )
+    .or(`citizen_id.eq.${user.id},contact_email.eq.${user.email}`)
     .order('created_at', { ascending: false })
 
   return data || []
@@ -149,12 +151,13 @@ export async function getTicketById(id: string) {
     .select(
       `
       id, title, category, type, status, priority, description, localidad, created_at, updated_at, likes_count,
+      contact_name, contact_email,
       ticket_events(id, type, content, is_internal, old_status, new_status, created_at, author_id),
       ticket_attachments(id, storage_path, file_name)
     `
     )
     .eq('id', id)
-    .eq('citizen_id', user.id)
+    .or(`citizen_id.eq.${user.id},contact_email.eq.${user.email}`)
     .single()
 
   return ticket
@@ -293,8 +296,15 @@ export async function getAllTickets(filters: TicketFilters) {
 
   const { data, count } = await query.range(from, to)
 
+  // Postgres no ordena texto libre por urgencia real (alta/media/baja no es
+  // alfabético), así que se reordena la página ya traída en JS.
+  const PRIORITY_ORDER: Record<string, number> = { alta: 0, media: 1, baja: 2 }
+  const tickets = [...(data ?? [])].sort(
+    (a, b) => (PRIORITY_ORDER[a.priority ?? 'media'] ?? 1) - (PRIORITY_ORDER[b.priority ?? 'media'] ?? 1)
+  )
+
   return {
-    tickets: data ?? [],
+    tickets,
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,
@@ -311,6 +321,7 @@ export async function getTicketByIdEquipo(id: string) {
     .select(
       `
       id, type, category, title, description, localidad, status, priority, likes_count, is_public, created_at, updated_at,
+      contact_name, contact_email, contact_phone, contact_dni,
       citizen:profiles!tickets_citizen_id_fkey(full_name, email, phone, localidad, barrio, departamento, sexo),
       assignee:team_members!tickets_assigned_to_fkey(id, role, area, profiles(full_name, email)),
       ticket_events(id, type, content, is_internal, created_at, author:profiles(full_name)),

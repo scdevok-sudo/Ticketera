@@ -14,6 +14,7 @@ interface PageProps {
     tipo?: string
     q?: string
     page?: string
+    nueva?: string
   }>
 }
 
@@ -57,7 +58,22 @@ export default async function TicketsEquipoPage({ searchParams }: PageProps) {
 
   return (
     <div>
-      <h2 className="mb-4 text-xl font-bold text-gray-900">Tickets</h2>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-xl font-bold text-gray-900">Tickets</h2>
+        <a
+          href="/equipo/exportar-contactos"
+          download
+          className="rounded-lg border border-green-500 bg-white px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-50"
+        >
+          Exportar contactos (.csv)
+        </a>
+      </div>
+
+      {params.nueva === 'true' && (
+        <div className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-800">
+          Consulta registrada con éxito. Se envió el acuse de recibo al vecino.
+        </div>
+      )}
 
       <FiltrosTicket teamMembers={teamMemberOptions} />
 

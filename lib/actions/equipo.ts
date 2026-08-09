@@ -3,11 +3,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { z } from 'zod'
+import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
-import { sendRespuestaCiudadano } from '@/lib/actions/email'
+import { sendRespuestaCiudadano, sendAsignacionOperador, sendAcuseReciboManual } from '@/lib/actions/email'
 
 export type EquipoActionState = {
   error?: string
@@ -167,10 +168,35 @@ export async function asignarTicket(
     // hay que resolver el nombre pasando por team_members.
     const { data: assigneeMember } = await supabase
       .from('team_members')
-      .select('profiles(full_name)')
+      .select('user_id, profiles(full_name, email)')
       .eq('id', parsed.data.assignee_id)
       .single()
-    assigneeName = unwrapEmbed(assigneeMember?.profiles)?.full_name ?? 'un operador'
+    const assigneeProfile = unwrapEmbed(assigneeMember?.profiles)
+    assigneeName = assigneeProfile?.full_name ?? 'un operador'
+
+    if (assigneeMember && assigneeMember.user_id !== user.id && assigneeProfile?.email) {
+      const { data: asignadorProfile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single()
+
+      const { data: ticket } = await supabase
+        .from('tickets')
+        .select('title')
+        .eq('id', parsed.data.ticket_id)
+        .single()
+
+      if (ticket) {
+        await sendAsignacionOperador({
+          to: assigneeProfile.email,
+          operadorNombre: assigneeName,
+          ticketId: parsed.data.ticket_id,
+          title: ticket.title,
+          asignadoPor: asignadorProfile?.full_name ?? 'Un operador',
+        }).catch(() => {})
+      }
+    }
   }
 
   await supabase.from('ticket_events').insert({
@@ -201,6 +227,16 @@ export async function cambiarPrioridad(ticketId: string, priority: string): Prom
   const parsed = PrioridadSchema.safeParse({ ticket_id: ticketId, priority })
   if (!parsed.success) return { error: parsed.error.issues[0].message }
 
+  const { data: current } = await supabase
+    .from('tickets')
+    .select('priority')
+    .eq('id', parsed.data.ticket_id)
+    .single()
+
+  if (!current) return { error: 'Ticket no encontrado' }
+
+  const oldPriority = current.priority ?? 'media'
+
   const { error } = await supabase
     .from('tickets')
     .update({ priority: parsed.data.priority, updated_at: new Date().toISOString() })
@@ -211,9 +247,11 @@ export async function cambiarPrioridad(ticketId: string, priority: string): Prom
   await supabase.from('ticket_events').insert({
     ticket_id: parsed.data.ticket_id,
     author_id: user.id,
-    type: 'internal_note',
-    content: `Prioridad cambiada a ${PRIORITY_LABELS[parsed.data.priority]}`,
+    type: 'priority_change',
+    content: `Prioridad cambiada de ${PRIORITY_LABELS[oldPriority] ?? oldPriority} a ${PRIORITY_LABELS[parsed.data.priority]}`,
     is_internal: true,
+    old_priority: oldPriority,
+    new_priority: parsed.data.priority,
   })
 
   revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
@@ -482,6 +520,163 @@ export async function cambiarCategoria(ticketId: string, category: string): Prom
   revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
   revalidatePath('/equipo/tickets')
   return {}
+}
+
+const CrearConsultaManualSchema = z.object({
+  contact_name: z.string().trim().min(2).max(100),
+  contact_email: z.string().trim().email(),
+  contact_phone: z.string().trim().max(20).optional(),
+  contact_dni: z.string().trim().max(10).optional(),
+  contact_localidad: z.string().trim().max(100).optional(),
+  type: z.enum(['reclamo', 'pedido']),
+  category: z.string().min(2),
+  area: z.string().min(2),
+  title: z.string().trim().min(5).max(200),
+  description: z.string().trim().min(10).max(2000),
+  priority: z.enum(['baja', 'media', 'alta']),
+  localidad: z.string().trim().max(100).optional(),
+})
+
+export async function crearConsultaManual(
+  _prevState: EquipoActionState,
+  formData: FormData
+): Promise<EquipoActionState> {
+  const user = await getUser()
+  if (!user) return { error: 'No autorizado' }
+  const teamMember = await getTeamMember()
+  if (!teamMember) return { error: 'No autorizado' }
+
+  const parsed = CrearConsultaManualSchema.safeParse({
+    contact_name: formData.get('contact_name'),
+    contact_email: formData.get('contact_email'),
+    contact_phone: formData.get('contact_phone') || undefined,
+    contact_dni: formData.get('contact_dni') || undefined,
+    contact_localidad: formData.get('contact_localidad') || undefined,
+    type: formData.get('type'),
+    category: formData.get('category'),
+    area: formData.get('area'),
+    title: formData.get('title'),
+    description: formData.get('description'),
+    priority: formData.get('priority'),
+    localidad: formData.get('localidad') || undefined,
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const supabase = await createClient()
+  const localidadDelProblema = parsed.data.localidad || parsed.data.contact_localidad || ''
+
+  const { data: ticket, error } = await supabase
+    .from('tickets')
+    .insert({
+      citizen_id: user.id,
+      contact_name: parsed.data.contact_name,
+      contact_email: parsed.data.contact_email,
+      contact_phone: parsed.data.contact_phone || null,
+      contact_dni: parsed.data.contact_dni || null,
+      type: parsed.data.type,
+      category: parsed.data.category,
+      area: parsed.data.area,
+      title: parsed.data.title,
+      description: parsed.data.description,
+      priority: parsed.data.priority,
+      localidad: localidadDelProblema,
+      status: 'nuevo',
+    })
+    .select('id, title, type')
+    .single()
+
+  if (error || !ticket) return { error: 'Error al registrar la consulta' }
+
+  await supabase.from('ticket_events').insert({
+    ticket_id: ticket.id,
+    author_id: user.id,
+    type: 'status_change',
+    content: `Consulta cargada manualmente por el equipo para ${parsed.data.contact_name}.`,
+    new_status: 'nuevo',
+    is_internal: false,
+  })
+
+  try {
+    await sendAcuseReciboManual({
+      to: parsed.data.contact_email,
+      contactName: parsed.data.contact_name,
+      ticketId: ticket.id,
+      title: ticket.title,
+      type: ticket.type,
+    })
+  } catch (e) {
+    console.error('Error enviando email:', e)
+  }
+
+  revalidatePath('/equipo/tickets')
+  redirect(`/equipo/tickets?nueva=true`)
+}
+
+export interface ContactoExport {
+  nombre: string
+  email: string
+  telefono: string
+  dni: string
+  localidad: string
+  fecha: string
+}
+
+export interface ExportarContactosResult {
+  data?: ContactoExport[]
+  error?: string
+}
+
+export async function exportarContactos(): Promise<ExportarContactosResult> {
+  const teamMember = await getTeamMember()
+  if (!teamMember) return { error: 'No autorizado' }
+  if (teamMember.role !== 'admin') return { error: 'Solo un admin puede exportar contactos' }
+
+  const supabase = await createClient()
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('full_name, email, phone, dni, localidad, localidad_tipo, barrio, departamento, created_at')
+    .eq('profile_complete', true)
+
+  const { data: manuales } = await supabase
+    .from('tickets')
+    .select('contact_name, contact_email, contact_phone, contact_dni, created_at')
+    .not('contact_email', 'is', null)
+
+  // Combinar y deduplicar por email: si el vecino ya tiene perfil (Google),
+  // ese registro prevalece por sobre los datos de contacto cargados manualmente.
+  const contactos = new Map<string, ContactoExport>()
+
+  for (const p of profiles ?? []) {
+    if (!p.email) continue
+    contactos.set(p.email.toLowerCase(), {
+      nombre: p.full_name ?? '',
+      email: p.email,
+      telefono: p.phone ?? '',
+      dni: p.dni ?? '',
+      localidad: p.localidad || (p.localidad_tipo === 'capital' ? p.barrio : p.departamento) || '',
+      fecha: p.created_at ?? '',
+    })
+  }
+
+  for (const m of manuales ?? []) {
+    if (!m.contact_email) continue
+    const key = m.contact_email.toLowerCase()
+    if (contactos.has(key)) continue
+    contactos.set(key, {
+      nombre: m.contact_name ?? '',
+      email: m.contact_email,
+      telefono: m.contact_phone ?? '',
+      dni: m.contact_dni ?? '',
+      localidad: '',
+      fecha: m.created_at ?? '',
+    })
+  }
+
+  return {
+    data: Array.from(contactos.values()).sort((a, b) => a.nombre.localeCompare(b.nombre)),
+  }
 }
 
 export async function desactivarMiembro(memberId: string): Promise<EquipoActionState> {

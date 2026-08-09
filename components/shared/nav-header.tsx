@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -21,6 +21,7 @@ interface NavHeaderProps {
   activeTab?: TabKey
   userName?: string
   isTeamMember?: boolean
+  hideOnTop?: boolean
 }
 
 const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
@@ -39,9 +40,10 @@ const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
 const TAB_CLASS =
   'whitespace-nowrap rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ease-in-out'
 
-export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHeaderProps) {
+export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTop }: NavHeaderProps) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [visible, setVisible] = useState(!hideOnTop)
   const tabs = TABS[variant]
 
   function isActive(tab: Tab) {
@@ -49,57 +51,77 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHea
     return pathname.startsWith(tab.href)
   }
 
+  useEffect(() => {
+    if (!hideOnTop) return
+
+    const handleScroll = () => {
+      setVisible(window.scrollY > 80)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [hideOnTop])
+
   return (
-    <header className="bg-brand-naranja">
-      <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between gap-3 px-4 sm:h-14 sm:px-6">
-        <Link href="/" className="shrink-0">
-          <Image
-            src={logoBlanco}
-            alt="Unidos Construimos"
-            priority
-            className="h-8 w-auto sm:h-9"
-          />
-        </Link>
+    <>
+      <header
+        className={`bg-brand-naranja ${
+          hideOnTop
+            ? `fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+                visible || open ? 'translate-y-0' : '-translate-y-full'
+              }`
+            : ''
+        }`}
+      >
+        <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between gap-3 px-4 sm:h-14 sm:px-6">
+          <Link href="/" className="shrink-0">
+            <Image
+              src={logoBlanco}
+              alt="Unidos Construimos"
+              priority
+              className="h-8 w-auto sm:h-9"
+            />
+          </Link>
 
-        <nav className="hidden items-center gap-0.5 lg:flex">
-          {tabs.map((tab) => (
-            <Link
-              key={tab.key}
-              href={tab.href}
-              aria-current={isActive(tab) ? 'page' : undefined}
-              className={`${TAB_CLASS} ${
-                isActive(tab) ? 'bg-white text-brand-naranja' : 'text-white/85 hover:bg-white/15'
-              }`}
-            >
-              {tab.label}
-            </Link>
-          ))}
-        </nav>
+          <nav className="hidden items-center gap-0.5 lg:flex">
+            {tabs.map((tab) => (
+              <Link
+                key={tab.key}
+                href={tab.href}
+                aria-current={isActive(tab) ? 'page' : undefined}
+                className={`${TAB_CLASS} ${
+                  isActive(tab) ? 'bg-white text-brand-naranja' : 'text-white/85 hover:bg-white/15'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          {variant === 'ciudadano' && isTeamMember && (
-            <Link
-              href="/equipo/tickets"
-              className="whitespace-nowrap rounded-md bg-brand-azul px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 ease-in-out hover:bg-[#242964]"
-            >
-              Panel del equipo
-            </Link>
-          )}
-          {variant === 'ciudadano' && userName && (
-            <span className="whitespace-nowrap text-[13px] font-medium text-white">{userName}</span>
-          )}
-          {variant === 'ciudadano' && <SignOutButton />}
+          <div className="hidden items-center gap-2 lg:flex">
+            {variant === 'ciudadano' && isTeamMember && (
+              <Link
+                href="/equipo/tickets"
+                className="whitespace-nowrap rounded-md bg-brand-azul px-3.5 py-1.5 text-[13px] font-semibold text-white transition-colors duration-150 ease-in-out hover:bg-[#242964]"
+              >
+                Panel del equipo
+              </Link>
+            )}
+            {variant === 'ciudadano' && userName && (
+              <span className="whitespace-nowrap text-[13px] font-medium text-white">{userName}</span>
+            )}
+            {variant === 'ciudadano' && <SignOutButton />}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Abrir menú"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-white lg:hidden"
+          >
+            <Icon name="menu-2" size={22} />
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Abrir menú"
-          className="flex h-8 w-8 items-center justify-center rounded-md text-white lg:hidden"
-        >
-          <Icon name="menu-2" size={22} />
-        </button>
-      </div>
+      </header>
 
       {open && (
         <div className="fixed inset-0 z-50 bg-black/50 lg:hidden" onClick={() => setOpen(false)} />
@@ -157,6 +179,6 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember }: NavHea
           </div>
         )}
       </div>
-    </header>
+    </>
   )
 }

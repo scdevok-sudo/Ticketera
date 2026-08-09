@@ -6,30 +6,38 @@ import { toggleTicketPublico } from '@/lib/actions/equipo'
 
 interface PublicoToggleProps {
   ticketId: string
+  /** Estado real del ticket en la DB (tickets.is_public). true = visible en /transparencia. */
   isPublic: boolean
 }
 
 export function PublicoToggle({ ticketId, isPublic }: PublicoToggleProps) {
   const router = useRouter()
-  const [checked, setChecked] = useState(isPublic)
+  const [active, setActive] = useState(isPublic)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleToggle() {
-    const next = !checked
-    setChecked(next)
+    const next = !active
+    setActive(next)
     setError(null)
 
     startTransition(async () => {
       const result = await toggleTicketPublico(ticketId, next)
       if (result?.error) {
-        setChecked(!next)
+        setActive(!next)
         setError(result.error)
         return
       }
       router.refresh()
     })
   }
+
+  // Track: gris cuando inactivo, naranja cuando activo.
+  const trackClass = active ? 'bg-[#FF7402]' : 'bg-gray-300'
+
+  // Thumb: translate-x-0 → pegado a la izquierda (inactivo).
+  // translate-x-5 → desplazado a la derecha (activo).
+  const thumbTranslateClass = active ? 'translate-x-5' : 'translate-x-0'
 
   return (
     <div>
@@ -40,20 +48,17 @@ export function PublicoToggle({ ticketId, isPublic }: PublicoToggleProps) {
             Al activarlo, este caso aparecerá en estadísticas públicas (sin datos personales)
           </p>
         </div>
+
         <button
           type="button"
           role="switch"
-          aria-checked={checked}
+          aria-checked={active}
           disabled={isPending}
           onClick={handleToggle}
-          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-60 ${
-            checked ? 'bg-brand-naranja' : 'bg-gray-300'
-          }`}
+          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-60 ${trackClass}`}
         >
-          <span
-            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-              checked ? 'translate-x-5' : 'translate-x-0.5'
-            }`}
+          <div
+            className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${thumbTranslateClass}`}
           />
         </button>
       </div>

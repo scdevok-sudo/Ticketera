@@ -13,6 +13,7 @@ interface SidebarProps {
 
 const NAV_ITEMS = [
   { href: '/equipo/tickets', label: 'Tickets', icon: 'clipboard-list' },
+  { href: '/equipo/nueva-consulta', label: 'Nueva consulta', icon: 'plus' },
   { href: '/equipo/kpis', label: 'KPIs', icon: 'chart-bar' },
 ]
 

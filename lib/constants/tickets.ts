@@ -105,4 +105,5 @@ export const EVENT_TYPE_LABELS: Record<string, string> = {
   internal_note: 'Nota interna',
   response: 'Respuesta al ciudadano',
   assignment: 'Asignación',
+  priority_change: 'Cambio de prioridad',
 }

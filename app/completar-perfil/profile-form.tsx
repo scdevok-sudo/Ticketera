@@ -35,8 +35,7 @@ export function ProfileForm() {
     dniValid &&
     phoneValid &&
     localidadTipo !== '' &&
-    localidad.trim().length >= 2 &&
-    (localidadTipo !== 'provincia' || departamento !== '') &&
+    (localidadTipo !== 'provincia' || (localidad.trim().length >= 2 && departamento !== '')) &&
     consent
 
   return (
@@ -118,6 +117,9 @@ export function ProfileForm() {
 
         {localidadTipo === 'capital' && (
           <div className="mt-3">
+            <label htmlFor="localidad" className="block text-xs font-medium text-zinc-500">
+              Barrio <span className="font-normal text-zinc-400">(opcional)</span>
+            </label>
             <input
               id="localidad"
               name="localidad"
@@ -125,7 +127,7 @@ export function ProfileForm() {
               value={localidad}
               onChange={(e) => setLocalidad(e.target.value)}
               placeholder="Ej: Barrio Norte, Alto Verde, Candioti..."
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#9CA3AF] focus:border-brand-naranja focus:outline-none focus:ring-1 focus:ring-brand-naranja"
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-[#1a1a1a] placeholder:text-[#9CA3AF] focus:border-brand-naranja focus:outline-none focus:ring-1 focus:ring-brand-naranja"
             />
           </div>
         )}

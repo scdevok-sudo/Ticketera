@@ -40,11 +40,15 @@ export async function completeProfile(
   _prevState: ProfileFormState,
   formData: FormData
 ): Promise<ProfileFormState> {
+  const localidadTipoRaw = formData.get('localidad_tipo')
+  const localidadRaw = formData.get('localidad')
+
   const raw = {
     dni: formData.get('dni'),
     phone: formData.get('phone'),
-    localidad: formData.get('localidad'),
-    localidad_tipo: formData.get('localidad_tipo'),
+    localidad:
+      localidadTipoRaw === 'capital' && !localidadRaw ? 'Santa Fe' : localidadRaw,
+    localidad_tipo: localidadTipoRaw,
     barrio: formData.get('barrio') || undefined,
     departamento: formData.get('departamento') || undefined,
     sexo: formData.get('sexo') || undefined,
@@ -64,9 +68,6 @@ export async function completeProfile(
 
   const { dni, phone, localidad, localidad_tipo, barrio, departamento, sexo } = parsed.data
 
-  if (localidad_tipo === 'capital' && !barrio) {
-    return { fieldErrors: { barrio: 'Seleccioná tu barrio' } }
-  }
   if (localidad_tipo === 'provincia' && !departamento) {
     return { fieldErrors: { departamento: 'Seleccioná tu departamento' } }
   }

@@ -7,6 +7,7 @@ import {
 } from '@/lib/constants/tickets'
 import { StatusBadgeEquipo, PriorityBadge } from '@/components/equipo/badges'
 import { CambiarEstado } from '@/components/equipo/cambiar-estado'
+import { CambiarPrioridad } from '@/components/equipo/cambiar-prioridad'
 import { CambiarCategoria } from '@/components/equipo/cambiar-categoria'
 import { AsignarTicket } from '@/components/equipo/asignar-ticket'
 import { NotaInterna } from '@/components/equipo/nota-interna'
@@ -73,6 +74,10 @@ export interface TicketDetalle {
   is_public: boolean | null
   created_at: string | null
   updated_at: string | null
+  contact_name: string | null
+  contact_email: string | null
+  contact_phone: string | null
+  contact_dni: string | null
   citizen: Citizen | Citizen[] | null
   assignee: Assignee | Assignee[] | null
   ticket_events: TicketEvent[]
@@ -168,23 +173,32 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
               {events.map((event) => {
                 const author = unwrapEmbed(event.author)
                 const isInternal = !!event.is_internal
+                const isPriorityChange = event.type === 'priority_change'
                 return (
                   <div
                     key={event.id}
                     className={`rounded-lg p-3 ${
-                      isInternal
-                        ? 'border-l-4 border-yellow-400 bg-gray-50'
-                        : 'border-l-4 border-brand-azul bg-white'
+                      isPriorityChange
+                        ? 'border-l-4 border-blue-400 bg-blue-50'
+                        : isInternal
+                          ? 'border-l-4 border-yellow-400 bg-gray-50'
+                          : 'border-l-4 border-brand-azul bg-white'
                     }`}
                   >
                     <div className="mb-1 flex flex-wrap items-center gap-2">
                       <span className="text-xs font-semibold text-gray-700">
                         {EVENT_TYPE_LABELS[event.type] ?? event.type}
                       </span>
-                      {isInternal && (
-                        <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-yellow-800">
-                          Nota interna
+                      {isPriorityChange ? (
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-blue-800">
+                          Cambio de prioridad
                         </span>
+                      ) : (
+                        isInternal && (
+                          <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-yellow-800">
+                            Nota interna
+                          </span>
+                        )
                       )}
                       <span className="ml-auto text-xs text-gray-400">
                         {event.created_at ? formatFechaHora(event.created_at) : ''}
@@ -243,6 +257,39 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
             </dl>
           </div>
 
+          {ticket.contact_email && (
+            <div className="rounded-lg bg-white p-5 shadow-sm">
+              <h2 className="mb-3 text-sm font-bold text-gray-900">Datos de contacto del vecino</h2>
+              <p className="mb-2 text-xs text-gray-400">Consulta cargada manualmente por el equipo.</p>
+              <dl className="space-y-2 text-sm">
+                <div>
+                  <dt className="text-xs text-gray-400">Nombre</dt>
+                  <dd className="text-gray-800">{ticket.contact_name ?? '—'}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-400">Email</dt>
+                  <dd className="text-gray-800">
+                    <a href={`mailto:${ticket.contact_email}`} className="text-brand-azul hover:underline">
+                      {ticket.contact_email}
+                    </a>
+                  </dd>
+                </div>
+                {ticket.contact_phone && (
+                  <div>
+                    <dt className="text-xs text-gray-400">Teléfono</dt>
+                    <dd className="text-gray-800">{ticket.contact_phone}</dd>
+                  </div>
+                )}
+                {ticket.contact_dni && (
+                  <div>
+                    <dt className="text-xs text-gray-400">DNI</dt>
+                    <dd className="text-gray-800">{ticket.contact_dni}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+          )}
+
           <div className="rounded-lg bg-white p-5 shadow-sm">
             <h2 className="mb-3 text-sm font-bold text-gray-900">Categoría</h2>
             <CambiarCategoria ticketId={ticket.id} currentCategory={ticket.category} />
@@ -250,6 +297,10 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
 
           <div className="rounded-lg bg-white p-5 shadow-sm">
             <CambiarEstado ticketId={ticket.id} currentStatus={status} />
+          </div>
+
+          <div className="rounded-lg bg-white p-5 shadow-sm">
+            <CambiarPrioridad ticketId={ticket.id} currentPriority={priority} />
           </div>
 
           <div className="rounded-lg bg-white p-5 shadow-sm">

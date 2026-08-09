@@ -10,6 +10,7 @@ interface TicketCardProps {
     category: string
     status: string | null
     created_at: string | null
+    contact_name?: string | null
   }
 }
 
@@ -43,6 +44,9 @@ export function TicketCard({ ticket }: TicketCardProps) {
         <p className="text-xs text-zinc-500">
           {CATEGORY_LABELS[ticket.category] ?? ticket.category} · {fecha}
         </p>
+        {ticket.contact_name && (
+          <p className="mt-0.5 text-[11px] italic text-zinc-400">Cargada por el equipo</p>
+        )}
       </div>
       <span className="shrink-0 text-zinc-400" aria-hidden="true">
         →
