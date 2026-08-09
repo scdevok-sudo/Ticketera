@@ -34,7 +34,6 @@ export function ProfileForm() {
   const isValid =
     dniValid &&
     phoneValid &&
-    localidadTipo !== '' &&
     (localidadTipo !== 'provincia' || (localidad.trim().length >= 2 && departamento !== '')) &&
     consent
 
@@ -114,6 +113,10 @@ export function ProfileForm() {
             Otra localidad
           </button>
         </div>
+
+        <p className="mt-1 text-xs text-gray-400">
+          Podés completar este dato más adelante desde tu perfil.
+        </p>
 
         {localidadTipo === 'capital' && (
           <div className="mt-3">
