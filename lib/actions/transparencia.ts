@@ -1,6 +1,5 @@
 'use server'
 
-import { unstable_cache } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { STATUS_LABELS } from '@/lib/constants/tickets'
 
@@ -11,8 +10,7 @@ export interface StatsPublicas {
   promedioDias: number
 }
 
-export const getStatsPublicas = unstable_cache(
-  async (): Promise<StatsPublicas> => {
+export async function getStatsPublicas(): Promise<StatsPublicas> {
   const supabase = await createClient()
 
   const { count: total } = await supabase
@@ -47,18 +45,14 @@ export const getStatsPublicas = unstable_cache(
     tasaResolucion: total ? Math.round(((resueltos ?? 0) / total) * 1000) / 10 : 0,
     promedioDias,
   }
-  },
-  ['stats-publicas'],
-  { revalidate: 60 }
-)
+}
 
 export interface TicketsPorCategoria {
   category: string
   count: number
 }
 
-export const getTicketsPorCategoria = unstable_cache(
-  async (): Promise<TicketsPorCategoria[]> => {
+export async function getTicketsPorCategoria(): Promise<TicketsPorCategoria[]> {
   const supabase = await createClient()
   const { data } = await supabase.from('public_tickets_stats').select('category')
 
@@ -73,10 +67,7 @@ export const getTicketsPorCategoria = unstable_cache(
   return Object.entries(counts)
     .map(([category, count]) => ({ category, count }))
     .sort((a, b) => b.count - a.count)
-  },
-  ['tickets-por-categoria'],
-  { revalidate: 60 }
-)
+}
 
 export interface TicketsPorEstado {
   status: string
@@ -84,8 +75,7 @@ export interface TicketsPorEstado {
   count: number
 }
 
-export const getTicketsPorEstado = unstable_cache(
-  async (): Promise<TicketsPorEstado[]> => {
+export async function getTicketsPorEstado(): Promise<TicketsPorEstado[]> {
   const supabase = await createClient()
   const { data } = await supabase.from('public_tickets_stats').select('status')
 
@@ -102,18 +92,14 @@ export const getTicketsPorEstado = unstable_cache(
     label: STATUS_LABELS[status] ?? status,
     count,
   }))
-  },
-  ['tickets-por-estado'],
-  { revalidate: 60 }
-)
+}
 
 export interface EvolucionMensual {
   mes: string
   count: number
 }
 
-export const getEvolucionMensual = unstable_cache(
-  async (): Promise<EvolucionMensual[]> => {
+export async function getEvolucionMensual(): Promise<EvolucionMensual[]> {
   const supabase = await createClient()
   const { data } = await supabase
     .from('public_tickets_stats')
@@ -136,10 +122,7 @@ export const getEvolucionMensual = unstable_cache(
       const label = date.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')
       return { mes: label.charAt(0).toUpperCase() + label.slice(1), count }
     })
-  },
-  ['evolucion-mensual'],
-  { revalidate: 60 }
-)
+}
 
 export interface CasoResuelto {
   id: string
@@ -150,8 +133,7 @@ export interface CasoResuelto {
   updated_at: string
 }
 
-export const getUltimosCasosResueltos = unstable_cache(
-  async (): Promise<CasoResuelto[]> => {
+export async function getUltimosCasosResueltos(): Promise<CasoResuelto[]> {
   const supabase = await createClient()
   const { data } = await supabase
     .from('tickets')
@@ -162,7 +144,4 @@ export const getUltimosCasosResueltos = unstable_cache(
     .limit(10)
 
   return data ?? []
-  },
-  ['ultimos-casos-resueltos'],
-  { revalidate: 60 }
-)
+}

@@ -1,12 +1,22 @@
 import Link from 'next/link'
 import { getMyTickets } from '@/lib/actions/tickets'
 import { TicketCard } from '@/components/ciudadano/ticket-card'
+import { PaginacionSimple } from '@/components/ciudadano/paginacion-simple'
 import { Icon } from '@/components/ui/icon'
 
-export default async function MisReclamosPage() {
-  const tickets = await getMyTickets()
+const PAGE_SIZE = 9
 
-  if (tickets.length === 0) {
+interface Props {
+  searchParams: Promise<{ page?: string }>
+}
+
+export default async function MisReclamosPage({ searchParams }: Props) {
+  const params = await searchParams
+  const page = params.page ? parseInt(params.page, 10) : 1
+
+  const allTickets = await getMyTickets()
+
+  if (allTickets.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-20 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-orange-100">
@@ -28,9 +38,13 @@ export default async function MisReclamosPage() {
     )
   }
 
+  const total = allTickets.length
+  const offset = (page - 1) * PAGE_SIZE
+  const tickets = allTickets.slice(offset, offset + PAGE_SIZE)
+
   return (
-    <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-lg font-bold text-zinc-800">Mis consultas</h1>
         <Link
           href="/ciudadano/nuevo-reclamo"
@@ -40,11 +54,20 @@ export default async function MisReclamosPage() {
         </Link>
       </div>
 
-      <div className="space-y-3">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {tickets.map((ticket) => (
-          <TicketCard key={ticket.id} ticket={ticket} />
+          <TicketCard key={ticket.id} ticket={ticket} showLikes={false} />
         ))}
       </div>
+
+      {total > PAGE_SIZE && (
+        <PaginacionSimple
+          page={page}
+          total={total}
+          pageSize={PAGE_SIZE}
+          buildHref={(p) => `?page=${p}`}
+        />
+      )}
     </div>
   )
 }

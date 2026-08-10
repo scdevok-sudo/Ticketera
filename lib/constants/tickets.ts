@@ -107,3 +107,23 @@ export const EVENT_TYPE_LABELS: Record<string, string> = {
   assignment: 'Asignación',
   priority_change: 'Cambio de prioridad',
 }
+
+// Colores de fondo suave por categoría — para cards ciudadano (grilla mis-consultas / consultas de vecinos)
+export const CATEGORIA_BG: Record<string, string> = {
+  infraestructura: '#FFF3E8', // naranja muy suave
+  salud: '#EDF7F0', // verde muy suave
+  espacios_publicos: '#EBF3FC', // azul muy suave
+  educacion: '#F2EDFB', // violeta muy suave
+  social: '#FEF0F0', // rojo/rosa muy suave
+  otro: '#F4F4F5', // gris neutro
+}
+
+// Color de ícono por categoría (mismo criterio que el fondo, para la card)
+export const CATEGORIA_ICON_COLOR: Record<string, string> = {
+  infraestructura: '#FF7402',
+  salud: '#16a34a',
+  espacios_publicos: '#2563eb',
+  educacion: '#7c3aed',
+  social: '#dc2626',
+  otro: '#6b7280',
+}

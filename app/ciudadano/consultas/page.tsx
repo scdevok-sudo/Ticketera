@@ -1,22 +1,21 @@
-import Link from 'next/link'
 import { getConsultasPublicas } from '@/lib/actions/tickets'
 import { ConsultasVecinosLista } from '@/components/ciudadano/consultas-vecinos-lista'
+import { PaginacionSimple } from '@/components/ciudadano/paginacion-simple'
 import { Icon } from '@/components/ui/icon'
 
 interface Props {
   searchParams: Promise<{ page?: string }>
 }
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 9
 
 export default async function ConsultasVecinosPage({ searchParams }: Props) {
   const params = await searchParams
   const page = params.page ? parseInt(params.page, 10) : 1
   const { consultas, total } = await getConsultasPublicas(page, PAGE_SIZE)
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100">
           <Icon name="users" size={20} className="text-brand-naranja" />
@@ -35,34 +34,17 @@ export default async function ConsultasVecinosPage({ searchParams }: Props) {
         </div>
       ) : (
         <>
-          <ConsultasVecinosLista consultas={consultas} />
+          <div className="mb-6">
+            <ConsultasVecinosLista consultas={consultas} />
+          </div>
 
-          {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
-              <span>
-                Mostrando {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} de {total}
-              </span>
-              <div className="flex gap-2">
-                <Link
-                  href={`?page=${Math.max(1, page - 1)}`}
-                  aria-disabled={page <= 1}
-                  className={`rounded-lg border border-gray-200 px-3 py-1.5 ${
-                    page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  ← Anterior
-                </Link>
-                <Link
-                  href={`?page=${Math.min(totalPages, page + 1)}`}
-                  aria-disabled={page >= totalPages}
-                  className={`rounded-lg border border-gray-200 px-3 py-1.5 ${
-                    page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  Siguiente →
-                </Link>
-              </div>
-            </div>
+          {total > PAGE_SIZE && (
+            <PaginacionSimple
+              page={page}
+              total={total}
+              pageSize={PAGE_SIZE}
+              buildHref={(p) => `?page=${p}`}
+            />
           )}
         </>
       )}

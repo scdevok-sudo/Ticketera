@@ -17,6 +17,8 @@ import {
   getUltimosCasosResueltos,
 } from '@/lib/actions/transparencia'
 
+export const revalidate = 60
+
 async function StatsSection() {
   const stats = await getStatsPublicas()
 
@@ -177,7 +179,17 @@ export default async function TransparenciaPage() {
             <span>Privacidad</span>
             <span>Ley 25.326</span>
           </div>
-          <p className="text-white/50">Desarrollado por SCdev · scdev.com.ar</p>
+          <p className="text-white/50">
+            Desarrollado por SCdev ·{' '}
+            <a
+              href="https://scdev.com.ar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-white/80"
+            >
+              scdev.com.ar
+            </a>
+          </p>
         </div>
       </footer>
     </div>

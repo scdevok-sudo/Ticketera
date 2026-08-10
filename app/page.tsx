@@ -11,6 +11,8 @@ import { CATEGORIES } from '@/lib/constants/tickets'
 import joseCorralHero from '@/public/images/jose-corral1.png'
 import logoBlanco from '@/public/brand/logo-blanco.png'
 
+export const revalidate = 60
+
 const STATS_VACIAS: StatsPublicas = { total: 0, resueltos: 0, tasaResolucion: 0, promedioDias: 0 }
 
 const CATEGORY_STYLES: Record<string, { bg: string; accent: string }> = {
@@ -226,7 +228,17 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          <p className="mt-3 text-center text-xs text-white/50">Desarrollado por SCdev · scdev.com.ar</p>
+          <p className="mt-3 text-center text-xs text-white/50">
+            Desarrollado por SCdev ·{' '}
+            <a
+              href="https://scdev.com.ar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-white/80"
+            >
+              scdev.com.ar
+            </a>
+          </p>
         </div>
       </footer>
     </div>
