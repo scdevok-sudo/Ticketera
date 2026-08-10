@@ -9,7 +9,7 @@ const ProfileSchema = z.object({
   phone: z
     .string()
     .regex(/^[0-9]{10}$/, 'El teléfono debe tener 10 dígitos sin el 0 ni el 15'),
-  localidad: z.string().min(2, 'Seleccioná tu localidad').optional(),
+  localidad: z.string().min(2, 'Seleccioná tu localidad').max(100).optional(),
   localidad_tipo: z.enum(['capital', 'provincia']).optional(),
   barrio: z.string().trim().max(100).optional(),
   departamento: z.string().min(2).optional(),
