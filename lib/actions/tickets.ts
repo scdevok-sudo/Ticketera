@@ -40,15 +40,18 @@ export async function createTicket(
     return { error: parsed.error.issues[0].message }
   }
 
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  const { count } = await supabase
-    .from('tickets')
-    .select('*', { count: 'exact', head: true })
-    .eq('citizen_id', user.id)
-    .gte('created_at', yesterday)
+  const teamMember = await getTeamMember()
+  if (!teamMember) {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { count } = await supabase
+      .from('tickets')
+      .select('*', { count: 'exact', head: true })
+      .eq('citizen_id', user.id)
+      .gte('created_at', yesterday)
 
-  if (count && count >= 5) {
-    return { error: 'Podés registrar hasta 5 consultas por día. Intentá mañana.' }
+    if (count && count >= 5) {
+      return { error: 'Podés registrar hasta 5 consultas por día. Intentá mañana.' }
+    }
   }
 
   const { data: ticket, error } = await supabase
