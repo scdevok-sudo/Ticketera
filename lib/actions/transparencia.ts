@@ -124,6 +124,34 @@ export async function getEvolucionMensual(): Promise<EvolucionMensual[]> {
     })
 }
 
+export interface TopLocalidad {
+  localidad: string
+  total: number
+}
+
+export async function getTopLocalidades(limit: number = 10): Promise<TopLocalidad[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('tickets')
+    .select('localidad')
+    .eq('is_public', true)
+    .not('localidad', 'is', null)
+    .neq('localidad', '')
+
+  if (!data) return []
+
+  const counts: Record<string, number> = {}
+  data.forEach((t) => {
+    if (!t.localidad) return
+    counts[t.localidad] = (counts[t.localidad] || 0) + 1
+  })
+
+  return Object.entries(counts)
+    .map(([localidad, total]) => ({ localidad, total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, limit)
+}
+
 export interface CasoResuelto {
   id: string
   title: string

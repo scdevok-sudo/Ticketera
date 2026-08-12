@@ -9,12 +9,14 @@ import { GraficoEstados } from '@/components/transparencia/grafico-estados'
 import { GraficoEvolucion } from '@/components/transparencia/grafico-evolucion'
 import { CasoResueltoCard } from '@/components/transparencia/caso-resuelto-card'
 import { SkeletonCard } from '@/components/transparencia/skeleton-card'
+import { TopLocalidades } from '@/components/transparencia/top-localidades'
 import {
   getStatsPublicas,
   getTicketsPorCategoria,
   getTicketsPorEstado,
   getEvolucionMensual,
   getUltimosCasosResueltos,
+  getTopLocalidades,
 } from '@/lib/actions/transparencia'
 
 export const revalidate = 60
@@ -54,6 +56,11 @@ async function EstadosSection() {
 async function EvolucionSection() {
   const evolucion = await getEvolucionMensual()
   return <GraficoEvolucion datos={evolucion} />
+}
+
+async function TopLocalidadesSection() {
+  const topLocalidades = await getTopLocalidades(10)
+  return <TopLocalidades datos={topLocalidades} />
 }
 
 async function UltimosCasosSection() {
@@ -142,6 +149,13 @@ export default async function TransparenciaPage() {
           <h2 className="mb-4 text-sm font-bold text-gray-900">Evolución de consultas — últimos 6 meses</h2>
           <Suspense fallback={<SkeletonCard height={260} />}>
             <EvolucionSection />
+          </Suspense>
+        </section>
+
+        <section className="mt-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 text-sm font-bold text-gray-900">Zonas con más consultas</h2>
+          <Suspense fallback={<SkeletonCard height={240} />}>
+            <TopLocalidadesSection />
           </Suspense>
         </section>
 
