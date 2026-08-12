@@ -176,8 +176,12 @@ export default async function TransparenciaPage() {
         <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-2 px-4 py-6 text-center text-xs text-white/80 sm:px-6">
           <p>Unidos Construimos · José Corral · Diputado Provincial · Santa Fe · 2026</p>
           <div className="flex gap-4">
-            <span>Privacidad</span>
-            <span>Ley 25.326</span>
+            <Link href="/privacidad" className="underline hover:text-white/80">
+              Privacidad
+            </Link>
+            <Link href="/privacidad" className="underline hover:text-white/80">
+              Ley 25.326
+            </Link>
           </div>
           <p className="text-white/50">
             Desarrollado por SCdev ·{' '}
