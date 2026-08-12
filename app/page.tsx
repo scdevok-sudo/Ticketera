@@ -226,6 +226,9 @@ export default async function Home() {
               <Link href="/ayuda" className="underline transition-colors hover:text-orange-300">
                 Ayuda
               </Link>
+              <Link href="/privacidad" className="underline transition-colors hover:text-orange-300">
+                Política de privacidad
+              </Link>
             </div>
           </div>
           <p className="mt-3 text-center text-xs text-white/50">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import Link from 'next/link'
 import { completeProfile, type ProfileFormState } from '@/lib/actions/profiles'
 import { LocalidadSelect } from '@/components/ciudadano/localidad-select'
 import { LOCALIDADES_PROVINCIA, getDepartamento } from '@/lib/constants/localidades'
@@ -196,8 +197,10 @@ export function ProfileForm() {
           className="mt-0.5 h-4 w-4 shrink-0 rounded border-zinc-300 text-brand-naranja focus:ring-brand-naranja"
         />
         <span className="text-xs leading-relaxed text-zinc-600">
-          Acepto que mis datos sean tratados conforme a la Ley 25.326 de Protección de Datos
-          Personales y autorizo al equipo a contactarme para gestionar mi trámite.
+          He leído y acepto la{' '}
+          <Link href="/privacidad" className="underline hover:text-brand-naranja">
+            política de privacidad
+          </Link>
         </span>
       </label>
       {state.fieldErrors?.consent_accepted && (

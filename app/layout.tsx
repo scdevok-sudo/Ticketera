@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     icon: "/brand/logo-isotipo.png",
     apple: "/brand/logo-isotipo.png",
   },
+  verification: {
+    google: "3Z3akvjbfj-qeru5wHndWleV4JRgZvDPe2rmgVvjLFo",
+  },
 };
 
 export default function RootLayout({

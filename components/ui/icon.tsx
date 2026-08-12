@@ -41,6 +41,9 @@ import {
   IconQrcode,
   IconMail,
   IconUserCheck,
+  IconUser,
+  IconLogout,
+  IconHome,
   type Icon as TablerIconType,
   type IconProps,
 } from '@tabler/icons-react'
@@ -88,6 +91,9 @@ const ICONS: Record<string, TablerIconType> = {
   qrcode: IconQrcode,
   mail: IconMail,
   'user-check': IconUserCheck,
+  user: IconUser,
+  logout: IconLogout,
+  home: IconHome,
 }
 
 interface AppIconProps extends IconProps {

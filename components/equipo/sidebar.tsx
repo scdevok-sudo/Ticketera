@@ -84,6 +84,16 @@ export function Sidebar({ role }: SidebarProps) {
           </Link>
         </div>
 
+        <div className="border-t border-white/10 px-3 py-3">
+          <Link
+            href="/"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10"
+          >
+            <Icon name="home" size={18} />
+            Inicio
+          </Link>
+        </div>
+
         <div className="border-t border-white/10 px-5 py-4">
           <SignOutButton />
         </div>

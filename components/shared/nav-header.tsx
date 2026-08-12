@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { SignOutButton } from '@/components/ui/sign-out-button'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import { Icon } from '@/components/ui/icon'
 import logoBlanco from '@/public/brand/logo-blanco.png'
 
@@ -39,6 +39,101 @@ const TABS: Record<NavHeaderProps['variant'], Tab[]> = {
 
 const TAB_CLASS =
   'whitespace-nowrap rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ease-in-out'
+
+function UserDropdown({ userName }: { userName?: string }) {
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const firstName = userName?.trim().split(/\s+/)[0] || 'Mi cuenta'
+
+  useEffect(() => {
+    if (!open) return
+
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
+
+  useEffect(() => {
+    const handleScroll = () => setOpen(false)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-1.5 text-[13px] font-medium text-white transition-colors duration-150 ease-in-out hover:bg-white/15"
+      >
+        {firstName}
+        <Icon
+          name="chevron-down"
+          size={14}
+          className={`transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-gray-100 bg-white shadow-lg">
+          <Link
+            href="/ciudadano/perfil"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            <Icon name="user" size={16} />
+            Mi perfil
+          </Link>
+          <hr className="border-gray-100" />
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+          >
+            <Icon name="logout" size={16} />
+            Cerrar sesión
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MobileSignOut({ onNavigate }: { onNavigate: () => void }) {
+  const router = useRouter()
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    onNavigate()
+    router.push('/login')
+    router.refresh()
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleSignOut}
+      className="flex w-full items-center gap-3 text-lg font-medium text-red-300 transition-colors hover:text-red-200"
+    >
+      <Icon name="logout" size={20} />
+      Cerrar sesión
+    </button>
+  )
+}
 
 export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTop }: NavHeaderProps) {
   const pathname = usePathname()
@@ -106,10 +201,7 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTo
                 Panel del equipo
               </Link>
             )}
-            {variant === 'ciudadano' && userName && (
-              <span className="whitespace-nowrap text-[13px] font-medium text-white">{userName}</span>
-            )}
-            {variant === 'ciudadano' && <SignOutButton />}
+            {variant === 'ciudadano' && <UserDropdown userName={userName} />}
           </div>
 
           <button
@@ -171,11 +263,26 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTo
               Panel del equipo
             </Link>
           )}
+          {variant === 'ciudadano' && (
+            <Link
+              href="/ciudadano/perfil"
+              onClick={() => setOpen(false)}
+              aria-current={pathname.startsWith('/ciudadano/perfil') ? 'page' : undefined}
+              className={`flex items-center gap-3 border-b border-white/10 px-6 py-4 text-lg transition-colors duration-150 ease-in-out ${
+                pathname.startsWith('/ciudadano/perfil')
+                  ? 'bg-brand-naranja font-semibold text-white'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <Icon name="user" size={20} />
+              Mi perfil
+            </Link>
+          )}
         </nav>
 
         {variant === 'ciudadano' && (
           <div className="border-t border-white/10 px-6 py-4">
-            <SignOutButton />
+            <MobileSignOut onNavigate={() => setOpen(false)} />
           </div>
         )}
       </div>

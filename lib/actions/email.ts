@@ -206,6 +206,51 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
   }
 }
 
+interface SolicitudEliminacionParams {
+  nombre: string
+  email: string
+  dni: string
+}
+
+export async function sendSolicitudEliminacion({ nombre, email, dni }: SolicitudEliminacionParams) {
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) {
+    console.warn('RESEND_API_KEY no configurada — email no enviado')
+    return
+  }
+
+  const timestamp = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      to: ['privacidad@unidosconstruimos.com.ar'],
+      subject: 'Solicitud de eliminación de cuenta — Unidos Construimos',
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
+          <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 16px;">Solicitud de eliminación de cuenta</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #1a1a1a;">
+            <tr><td style="padding: 6px 0; color: #6b7280;">Nombre</td><td style="padding: 6px 0;">${nombre}</td></tr>
+            <tr><td style="padding: 6px 0; color: #6b7280;">Email</td><td style="padding: 6px 0;">${email}</td></tr>
+            <tr><td style="padding: 6px 0; color: #6b7280;">DNI</td><td style="padding: 6px 0;">${dni}</td></tr>
+            <tr><td style="padding: 6px 0; color: #6b7280;">Fecha de solicitud</td><td style="padding: 6px 0;">${timestamp}</td></tr>
+          </table>
+        </div>
+      `,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(`Resend error: ${JSON.stringify(err)}`)
+  }
+}
+
 interface AsignacionOperadorParams {
   to: string
   operadorNombre: string
