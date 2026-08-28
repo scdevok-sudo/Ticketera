@@ -15,13 +15,17 @@ export const revalidate = 60
 
 const STATS_VACIAS: StatsPublicas = { total: 0, resueltos: 0, tasaResolucion: 0, promedioDias: 0 }
 
+const CATEGORY_STYLE_FALLBACK = { bg: '#F5F5F5', accent: '#616161' }
+
 const CATEGORY_STYLES: Record<string, { bg: string; accent: string }> = {
-  infraestructura: { bg: '#FFF3E0', accent: '#FF7402' },
-  salud: { bg: '#E8F5E9', accent: '#2E7D32' },
-  espacios_publicos: { bg: '#E3F2FD', accent: '#1565C0' },
-  educacion: { bg: '#F3E5F5', accent: '#6A1B9A' },
-  social: { bg: '#FCE4EC', accent: '#C62828' },
-  otro: { bg: '#F5F5F5', accent: '#616161' },
+  calles_luminarias_plazas: { bg: '#FFF3E0', accent: '#FF7402' },
+  vivienda_escrituras: { bg: '#FDF3E3', accent: '#B45309' },
+  clubes_asociaciones_instituciones: { bg: '#F3E5F5', accent: '#6A1B9A' },
+  educacion_salud_asistencia: { bg: '#E8F5E9', accent: '#2E7D32' },
+  infraestructura_obras: { bg: '#E0F2F1', accent: '#0F766E' },
+  luz_agua_cloacas: { bg: '#E3F2FD', accent: '#1565C0' },
+  movilidad_transporte: { bg: '#FCE4EC', accent: '#C62828' },
+  consultas_legislativas: { bg: '#EEEDFE', accent: '#2D3077' },
 }
 
 const PASOS = [
@@ -158,7 +162,7 @@ export default async function Home() {
           <h2 className="text-center text-2xl font-extrabold text-gray-900">¿Qué necesitás resolver hoy?</h2>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {CATEGORIES.map((cat) => {
-              const style = CATEGORY_STYLES[cat.id] ?? CATEGORY_STYLES.otro
+              const style = CATEGORY_STYLES[cat.id] ?? CATEGORY_STYLE_FALLBACK
               return (
                 <div
                   key={cat.id}

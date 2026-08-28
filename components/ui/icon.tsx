@@ -44,6 +44,8 @@ import {
   IconUser,
   IconLogout,
   IconHome,
+  IconDroplet,
+  IconBus,
   type Icon as TablerIconType,
   type IconProps,
 } from '@tabler/icons-react'
@@ -94,6 +96,8 @@ const ICONS: Record<string, TablerIconType> = {
   user: IconUser,
   logout: IconLogout,
   home: IconHome,
+  droplet: IconDroplet,
+  bus: IconBus,
 }
 
 interface AppIconProps extends IconProps {

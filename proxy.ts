@@ -53,6 +53,24 @@ export async function proxy(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
+    // Los operadores nunca pasan por /completar-perfil: ese formulario es del ciudadano.
+    // La query a team_members solo se hace cuando habría que redirigir (perfil incompleto)
+    // o cuando ya se está en /completar-perfil, para no agregar latencia al caso habitual.
+    if (!profile?.profile_complete || pathname.startsWith('/completar-perfil')) {
+      const { data: teamMember } = await supabase
+        .from('team_members')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('active', true)
+        .maybeSingle()
+
+      if (teamMember) {
+        return pathname.startsWith('/completar-perfil')
+          ? NextResponse.redirect(new URL('/equipo/tickets', request.url))
+          : supabaseResponse
+      }
+    }
+
     if (!profile?.profile_complete && pathname.startsWith('/ciudadano')) {
       return NextResponse.redirect(new URL('/completar-perfil', request.url))
     }

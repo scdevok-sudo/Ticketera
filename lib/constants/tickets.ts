@@ -6,13 +6,16 @@ export interface TicketCategory {
   icon: string
 }
 
+// Categorías del folleto de difusión "díptico JC V3" — lista definitiva.
 export const CATEGORIES: TicketCategory[] = [
-  { id: 'infraestructura', label: 'Infraestructura', description: 'Calles, baches, luminarias', icon: 'road' },
-  { id: 'salud', label: 'Salud', description: 'Centros de salud, turnos', icon: 'heartbeat' },
-  { id: 'espacios_publicos', label: 'Espacios públicos', description: 'Plazas, parques', icon: 'trees' },
-  { id: 'educacion', label: 'Educación', description: 'Escuelas, becas', icon: 'school' },
-  { id: 'social', label: 'Social', description: 'Comedores, asistencia', icon: 'heart-handshake' },
-  { id: 'otro', label: 'Otro', description: 'Cualquier otro tema', icon: 'help' },
+  { id: 'calles_luminarias_plazas', label: 'Calles, luminarias y plazas', description: 'Baches, alumbrado, plazas y espacios verdes', icon: 'road' },
+  { id: 'vivienda_escrituras', label: 'Vivienda y escrituras', description: 'Acceso a la vivienda y regularización dominial', icon: 'home' },
+  { id: 'clubes_asociaciones_instituciones', label: 'Clubes, asociaciones e instituciones', description: 'Clubes de barrio, ONG y entidades civiles', icon: 'users' },
+  { id: 'educacion_salud_asistencia', label: 'Educación, salud y asistencia social', description: 'Escuelas, centros de salud y asistencia social', icon: 'school' },
+  { id: 'infraestructura_obras', label: 'Infraestructura y obras', description: 'Obras públicas y equipamiento urbano', icon: 'tools' },
+  { id: 'luz_agua_cloacas', label: 'Luz, agua potable y cloacas', description: 'Servicios de luz, agua potable y cloacas', icon: 'droplet' },
+  { id: 'movilidad_transporte', label: 'Movilidad y transporte', description: 'Transporte público, tránsito y conectividad', icon: 'bus' },
+  { id: 'consultas_legislativas', label: 'Consultas e iniciativas legislativas', description: 'Proyectos de ley, iniciativas y consultas', icon: 'clipboard-list' },
 ]
 
 export const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
@@ -110,20 +113,24 @@ export const EVENT_TYPE_LABELS: Record<string, string> = {
 
 // Colores de fondo suave por categoría — para cards ciudadano (grilla mis-consultas / consultas de vecinos)
 export const CATEGORIA_BG: Record<string, string> = {
-  infraestructura: '#FFF3E8', // naranja muy suave
-  salud: '#EDF7F0', // verde muy suave
-  espacios_publicos: '#EBF3FC', // azul muy suave
-  educacion: '#F2EDFB', // violeta muy suave
-  social: '#FEF0F0', // rojo/rosa muy suave
-  otro: '#F4F4F5', // gris neutro
+  calles_luminarias_plazas: '#FFF3E8', // naranja muy suave
+  vivienda_escrituras: '#FDF3E3', // ámbar muy suave
+  clubes_asociaciones_instituciones: '#F2EDFB', // violeta muy suave
+  educacion_salud_asistencia: '#EDF7F0', // verde muy suave
+  infraestructura_obras: '#E9F5F3', // verde azulado muy suave
+  luz_agua_cloacas: '#EBF3FC', // azul muy suave
+  movilidad_transporte: '#FEF0F0', // rojo/rosa muy suave
+  consultas_legislativas: '#EEEDFE', // azul marca muy suave
 }
 
 // Color de ícono por categoría (mismo criterio que el fondo, para la card)
 export const CATEGORIA_ICON_COLOR: Record<string, string> = {
-  infraestructura: '#FF7402',
-  salud: '#16a34a',
-  espacios_publicos: '#2563eb',
-  educacion: '#7c3aed',
-  social: '#dc2626',
-  otro: '#6b7280',
+  calles_luminarias_plazas: '#FF7402',
+  vivienda_escrituras: '#b45309',
+  clubes_asociaciones_instituciones: '#7c3aed',
+  educacion_salud_asistencia: '#16a34a',
+  infraestructura_obras: '#0f766e',
+  luz_agua_cloacas: '#2563eb',
+  movilidad_transporte: '#dc2626',
+  consultas_legislativas: '#2D3077',
 }

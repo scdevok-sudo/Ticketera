@@ -202,6 +202,20 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTo
               </Link>
             )}
             {variant === 'ciudadano' && <UserDropdown userName={userName} />}
+            {variant === 'publico' && (
+              <Link
+                href="/login"
+                style={{
+                  color: 'rgba(255,255,255,0.85)',
+                  borderLeft: '1px solid rgba(255,255,255,0.25)',
+                  paddingLeft: 20,
+                }}
+                className="flex items-center gap-1.5 whitespace-nowrap text-[13px] font-medium transition-colors duration-150 ease-in-out hover:text-white"
+              >
+                <Icon name="login" size={16} />
+                Ingresar
+              </Link>
+            )}
           </div>
 
           <button
@@ -276,6 +290,16 @@ export function NavHeader({ variant, activeTab, userName, isTeamMember, hideOnTo
             >
               <Icon name="user" size={20} />
               Mi perfil
+            </Link>
+          )}
+          {variant === 'publico' && (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 border-b border-white/10 px-6 py-4 text-lg text-white/80 transition-colors duration-150 ease-in-out hover:bg-white/10 hover:text-white"
+            >
+              <Icon name="login" size={20} />
+              Ingresar
             </Link>
           )}
         </nav>

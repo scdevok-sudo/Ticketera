@@ -1,14 +1,28 @@
 import { describe, it, expect } from 'vitest'
 import {
   CATEGORIES,
+  CATEGORIA_BG,
+  CATEGORIA_ICON_COLOR,
   STATUS_LABELS,
   PRIORITY_LABELS,
   TICKET_STAGES,
 } from '@/lib/constants/tickets'
 
+// Categorías definitivas del folleto "díptico JC V3"
+const CATEGORIAS_FOLLETO = [
+  'calles_luminarias_plazas',
+  'vivienda_escrituras',
+  'clubes_asociaciones_instituciones',
+  'educacion_salud_asistencia',
+  'infraestructura_obras',
+  'luz_agua_cloacas',
+  'movilidad_transporte',
+  'consultas_legislativas',
+]
+
 describe('CATEGORIES', () => {
-  it('tiene al menos 4 categorías', () => {
-    expect(CATEGORIES.length).toBeGreaterThanOrEqual(4)
+  it('tiene las 8 categorías del folleto', () => {
+    expect(CATEGORIES.map((c) => c.id)).toEqual(CATEGORIAS_FOLLETO)
   })
 
   it('cada categoría tiene id, label e icon', () => {
@@ -30,6 +44,13 @@ describe('CATEGORIES', () => {
   it('no contiene la palabra reclamo en los labels', () => {
     for (const cat of CATEGORIES) {
       expect(cat.label.toLowerCase()).not.toContain('reclamo')
+    }
+  })
+
+  it('cada categoría tiene color de fondo e ícono en los mapas de la card', () => {
+    for (const cat of CATEGORIES) {
+      expect(CATEGORIA_BG[cat.id]).toBeTruthy()
+      expect(CATEGORIA_ICON_COLOR[cat.id]).toBeTruthy()
     }
   })
 })

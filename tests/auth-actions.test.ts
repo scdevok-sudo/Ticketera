@@ -86,7 +86,7 @@ describe('Server Actions del equipo — rechazo sin autorización', () => {
   })
 
   it('cambiarCategoria rechaza si no hay sesión/team member', async () => {
-    const result = await cambiarCategoria(TICKET_ID, 'infraestructura')
+    const result = await cambiarCategoria(TICKET_ID, 'infraestructura_obras')
     expect(result).toHaveProperty('error')
     expect(mockSupabaseFrom).not.toHaveBeenCalled()
   })
