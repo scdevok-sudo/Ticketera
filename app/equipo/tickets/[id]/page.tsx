@@ -25,6 +25,7 @@ export default async function TicketDetailEquipoPage({ params }: PageProps) {
       .createSignedUrl(attachment.storage_path, 3600)
     photoUrl = data?.signedUrl ?? null
   }
+  const attachmentIsPdf = !!attachment?.storage_path.toLowerCase().endsWith('.pdf')
 
   const teamMemberOptions = teamMembers.map((m) => ({
     id: m.id,
@@ -37,6 +38,7 @@ export default async function TicketDetailEquipoPage({ params }: PageProps) {
       ticket={ticket as unknown as TicketDetalle}
       teamMembers={teamMemberOptions}
       photoUrl={photoUrl}
+      photoIsPdf={attachmentIsPdf}
     />
   )
 }

@@ -46,6 +46,7 @@ import {
   IconHome,
   IconDroplet,
   IconBus,
+  IconFileTypePdf,
   type Icon as TablerIconType,
   type IconProps,
 } from '@tabler/icons-react'
@@ -98,6 +99,7 @@ const ICONS: Record<string, TablerIconType> = {
   home: IconHome,
   droplet: IconDroplet,
   bus: IconBus,
+  'file-type-pdf': IconFileTypePdf,
 }
 
 interface AppIconProps extends IconProps {

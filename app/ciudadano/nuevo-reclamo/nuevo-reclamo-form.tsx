@@ -5,6 +5,12 @@ import { createTicket, type TicketFormState } from '@/lib/actions/tickets'
 import { CATEGORIES, CATEGORY_ICONS, CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
 import { StepIndicator } from '@/components/ciudadano/step-indicator'
 import { Icon } from '@/components/ui/icon'
+import {
+  ATTACHMENT_ACCEPT,
+  ATTACHMENT_HELP_TEXT,
+  isPdf,
+  validateAttachment,
+} from '@/lib/constants/attachments'
 
 type TipoTramite = 'reclamo' | 'pedido'
 
@@ -31,8 +37,10 @@ export function NuevoReclamoForm() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [localidad, setLocalidad] = useState('')
+  // photoPreview solo existe para imágenes; los PDFs se representan con ícono + nombre.
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [photoName, setPhotoName] = useState<string | null>(null)
+  const [photoIsPdf, setPhotoIsPdf] = useState(false)
   const [photoError, setPhotoError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
@@ -76,27 +84,24 @@ export function NuevoReclamoForm() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const allowed = ['image/jpeg', 'image/png']
-    if (!allowed.includes(file.type)) {
-      setPhotoError('Solo se aceptan imágenes JPG o PNG')
-      if (fileInputRef.current) fileInputRef.current.value = ''
-      return
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoError('El archivo no puede superar los 5MB')
+    const invalid = validateAttachment(file)
+    if (invalid) {
+      setPhotoError(invalid)
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
 
     setPhotoError(null)
     if (photoPreview) URL.revokeObjectURL(photoPreview)
-    setPhotoPreview(URL.createObjectURL(file))
+    setPhotoPreview(isPdf(file.type) ? null : URL.createObjectURL(file))
+    setPhotoIsPdf(isPdf(file.type))
     setPhotoName(file.name)
   }
 
   function removePhoto() {
     if (photoPreview) URL.revokeObjectURL(photoPreview)
     setPhotoPreview(null)
+    setPhotoIsPdf(false)
     setPhotoName(null)
     setPhotoError(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
@@ -226,18 +231,25 @@ export function NuevoReclamoForm() {
         </div>
 
         <div>
-          <span className="block text-sm font-medium text-[#1a1a1a]">Adjuntar foto (opcional)</span>
-          <div className={photoPreview ? '' : 'hidden'}>
+          <span className="block text-sm font-medium text-[#1a1a1a]">
+            Adjuntar archivo (opcional)
+          </span>
+          <div className={photoName ? '' : 'hidden'}>
             <div className="mt-1.5 flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3">
               {photoPreview && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={photoPreview}
-                  alt="Vista previa de la foto adjunta"
+                  alt="Vista previa del archivo adjunto"
                   className="h-16 w-16 rounded-md object-cover"
                 />
               )}
-              <div className="min-w-0 flex-1 text-sm text-zinc-600">{photoName}</div>
+              {photoIsPdf && (
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-red-50">
+                  <Icon name="file-type-pdf" size={28} className="text-red-600" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1 truncate text-sm text-zinc-600">{photoName}</div>
               <button
                 type="button"
                 onClick={removePhoto}
@@ -249,18 +261,18 @@ export function NuevoReclamoForm() {
           </div>
           <label
             className={`mt-1.5 flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-dashed border-zinc-300 bg-white px-3 py-6 text-center hover:border-brand-naranja ${
-              photoPreview ? 'hidden' : ''
+              photoName ? 'hidden' : ''
             }`}
           >
             <Icon name="camera" size={24} className="text-brand-naranja" />
             <span className="text-sm font-medium text-zinc-600">
-              Adjuntar foto (opcional) · JPG o PNG, hasta 5MB
+              Adjuntar archivo (opcional) · {ATTACHMENT_HELP_TEXT}
             </span>
             <input
               ref={fileInputRef}
               type="file"
               name="photo"
-              accept="image/jpeg,image/png"
+              accept={ATTACHMENT_ACCEPT}
               onChange={handlePhotoChange}
               className="hidden"
             />
@@ -310,15 +322,22 @@ export function NuevoReclamoForm() {
             <p className="text-xs font-medium text-zinc-500">Localidad</p>
             <p className="text-sm text-zinc-800">{localidad}</p>
           </div>
-          {photoPreview && (
+          {photoName && (
             <div>
-              <p className="mb-1.5 text-xs font-medium text-zinc-500">Foto adjunta</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={photoPreview}
-                alt="Vista previa de la foto adjunta"
-                className="max-h-48 w-full rounded-md object-cover"
-              />
+              <p className="mb-1.5 text-xs font-medium text-zinc-500">Archivo adjunto</p>
+              {photoPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={photoPreview}
+                  alt="Vista previa del archivo adjunto"
+                  className="max-h-48 w-full rounded-md object-cover"
+                />
+              ) : (
+                <div className="flex items-center gap-2.5 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2.5">
+                  <Icon name="file-type-pdf" size={22} className="shrink-0 text-red-600" />
+                  <span className="min-w-0 truncate text-sm text-zinc-700">{photoName}</span>
+                </div>
+              )}
             </div>
           )}
         </div>

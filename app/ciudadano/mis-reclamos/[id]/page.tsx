@@ -7,6 +7,7 @@ import { StatusBadge } from '@/components/ciudadano/status-badge'
 import { TicketTimeline } from '@/components/ciudadano/ticket-timeline'
 import { AdhesionBtn } from '@/components/ciudadano/adhesion-btn'
 import { CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
+import { Icon } from '@/components/ui/icon'
 import { SuccessBanner } from './success-banner'
 
 export default async function TicketDetailPage({
@@ -44,6 +45,7 @@ export default async function TicketDetailPage({
       .createSignedUrl(attachment.storage_path, 3600)
     photoUrl = data?.signedUrl ?? null
   }
+  const attachmentIsPdf = !!attachment?.storage_path.toLowerCase().endsWith('.pdf')
 
   const status = ticket.status ?? 'nuevo'
   const ticketNum = ticket.id.slice(0, 8).toUpperCase()
@@ -84,14 +86,27 @@ export default async function TicketDetailPage({
       <div className="mt-4 rounded-lg bg-white p-5 shadow-sm">
         <h2 className="mb-2 text-sm font-bold text-zinc-800">Descripción</h2>
         <p className="whitespace-pre-line text-sm text-zinc-600">{ticket.description}</p>
-        {photoUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photoUrl}
-            alt="Foto adjunta de la consulta"
-            className="mt-3 max-h-80 w-full rounded-lg object-cover"
-          />
-        )}
+        {photoUrl &&
+          (attachmentIsPdf ? (
+            <a
+              href={photoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5 hover:border-brand-naranja"
+            >
+              <Icon name="file-type-pdf" size={22} className="shrink-0 text-red-600" />
+              <span className="min-w-0 truncate text-sm font-medium text-zinc-700">
+                Ver PDF adjunto
+              </span>
+            </a>
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={photoUrl}
+              alt="Foto adjunta de la consulta"
+              className="mt-3 max-h-80 w-full rounded-lg object-cover"
+            />
+          ))}
       </div>
 
       <div className="mt-4 rounded-lg bg-white p-5 shadow-sm">

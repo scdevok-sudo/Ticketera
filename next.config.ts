@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Los adjuntos PDF llegan hasta 10MB; sin esto Vercel corta el request a 4.5MB
+    // antes de que el Server Action lo vea. Aplica a todos los Server Actions.
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   async headers() {
     return [
       {

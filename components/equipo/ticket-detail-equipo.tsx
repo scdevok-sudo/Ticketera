@@ -12,6 +12,7 @@ import { CambiarCategoria } from '@/components/equipo/cambiar-categoria'
 import { AsignarTicket } from '@/components/equipo/asignar-ticket'
 import { NotaInterna } from '@/components/equipo/nota-interna'
 import { PublicoToggle } from '@/components/equipo/publico-toggle'
+import { Icon } from '@/components/ui/icon'
 
 interface Citizen {
   full_name: string | null
@@ -94,6 +95,7 @@ interface TicketDetailEquipoProps {
   ticket: TicketDetalle
   teamMembers: TeamMemberOption[]
   photoUrl: string | null
+  photoIsPdf?: boolean
 }
 
 function formatFechaHora(fecha: string) {
@@ -106,7 +108,12 @@ function formatFechaHora(fecha: string) {
   })
 }
 
-export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDetailEquipoProps) {
+export function TicketDetailEquipo({
+  ticket,
+  teamMembers,
+  photoUrl,
+  photoIsPdf = false,
+}: TicketDetailEquipoProps) {
   const citizen = unwrapEmbed(ticket.citizen)
   const assignee = unwrapEmbed(ticket.assignee)
   const assigneeProfile = assignee ? unwrapEmbed(assignee.profiles) : null
@@ -146,20 +153,36 @@ export function TicketDetailEquipo({ ticket, teamMembers, photoUrl }: TicketDeta
 
             {photoUrl && (
               <div className="mt-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photoUrl}
-                  alt="Foto adjunta de la consulta"
-                  className="max-h-72 w-full rounded-lg object-cover"
-                />
-                <a
-                  href={photoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-2 inline-block text-xs font-medium text-brand-azul hover:underline"
-                >
-                  Ver imagen en tamaño completo
-                </a>
+                {photoIsPdf ? (
+                  <a
+                    href={photoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 hover:border-brand-azul"
+                  >
+                    <Icon name="file-type-pdf" size={22} className="shrink-0 text-red-600" />
+                    <span className="min-w-0 truncate text-sm font-medium text-gray-700">
+                      Ver PDF adjunto
+                    </span>
+                  </a>
+                ) : (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photoUrl}
+                      alt="Foto adjunta de la consulta"
+                      className="max-h-72 w-full rounded-lg object-cover"
+                    />
+                    <a
+                      href={photoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-block text-xs font-medium text-brand-azul hover:underline"
+                    >
+                      Ver imagen en tamaño completo
+                    </a>
+                  </>
+                )}
               </div>
             )}
           </div>

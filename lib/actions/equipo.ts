@@ -8,6 +8,8 @@ import { revalidatePath } from 'next/cache'
 import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
+import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
+import { validateAttachment } from '@/lib/constants/attachments'
 import { sendRespuestaCiudadano, sendAsignacionOperador, sendAcuseReciboManual } from '@/lib/actions/email'
 
 export type EquipoActionState = {
@@ -563,6 +565,13 @@ export async function crearConsultaManual(
 
   if (!parsed.success) return { error: parsed.error.issues[0].message }
 
+  // El adjunto se valida antes de insertar para no dejar un ticket huérfano.
+  const photo = getAttachmentFromFormData(formData)
+  if (photo) {
+    const photoError = validateAttachment(photo)
+    if (photoError) return { error: photoError }
+  }
+
   const supabase = await createClient()
   const localidadDelProblema = parsed.data.localidad || parsed.data.contact_localidad || ''
 
@@ -596,6 +605,10 @@ export async function crearConsultaManual(
     new_status: 'nuevo',
     is_internal: false,
   })
+
+  if (photo) {
+    await uploadTicketAttachment(supabase, ticket.id, photo)
+  }
 
   try {
     await sendAcuseReciboManual({

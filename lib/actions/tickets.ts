@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { sendAcuseRecibo } from '@/lib/actions/email'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
+import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
+import { validateAttachment } from '@/lib/constants/attachments'
 
 const TicketSchema = z.object({
   type: z.enum(['reclamo', 'pedido', 'pregunta']),
@@ -54,6 +56,14 @@ export async function createTicket(
     }
   }
 
+  // El adjunto se valida ANTES de crear el ticket: si el archivo no sirve
+  // cortamos acá y no queda un ticket huérfano en la base.
+  const photo = getAttachmentFromFormData(formData)
+  if (photo) {
+    const photoError = validateAttachment(photo)
+    if (photoError) return { error: photoError }
+  }
+
   const { data: ticket, error } = await supabase
     .from('tickets')
     .insert({
@@ -80,38 +90,8 @@ export async function createTicket(
     is_internal: false,
   })
 
-  const rawPhoto = formData.get('photo') as File | null
-  const photo =
-    rawPhoto && rawPhoto.size > 0 && rawPhoto.type !== 'application/octet-stream' ? rawPhoto : null
-
   if (photo) {
-    const allowedTypes = ['image/jpeg', 'image/png']
-    if (!allowedTypes.includes(photo.type)) {
-      console.error('Tipo de archivo no permitido')
-    } else if (photo.size > 5 * 1024 * 1024) {
-      console.error('Archivo demasiado grande')
-    } else {
-      const fileExt = photo.type === 'image/jpeg' ? 'jpg' : 'png'
-      const fileName = `${crypto.randomUUID()}.${fileExt}`
-      const storagePath = `tickets/${ticket.id}/${fileName}`
-
-      const arrayBuffer = await photo.arrayBuffer()
-      const { error: uploadError } = await supabase.storage
-        .from('attachments')
-        .upload(storagePath, arrayBuffer, {
-          contentType: photo.type,
-          upsert: false,
-        })
-
-      if (!uploadError) {
-        await supabase.from('ticket_attachments').insert({
-          ticket_id: ticket.id,
-          storage_path: storagePath,
-          file_name: fileName,
-          file_size: photo.size,
-        })
-      }
-    }
+    await uploadTicketAttachment(supabase, ticket.id, photo)
   }
 
   try {
