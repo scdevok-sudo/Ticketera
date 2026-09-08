@@ -79,6 +79,17 @@ export const EQUIPO_STATUS_BADGE_CLASSES: Record<string, string> = {
   resuelto: 'bg-green-100 text-green-800',
 }
 
+// Orden de atención del listado del equipo: primero lo que requiere acción,
+// último lo ya cerrado. Los estados son los valores de DB, no los labels.
+export const ESTADO_ORDER: Record<string, number> = {
+  nuevo: 0,
+  en_revision: 1,
+  en_gestion: 2,
+  derivado: 3,
+  requiere_info: 4,
+  resuelto: 5,
+}
+
 export type TicketPriority = 'alta' | 'media' | 'baja'
 
 export const PRIORITY_LABELS: Record<string, string> = {
@@ -86,6 +97,9 @@ export const PRIORITY_LABELS: Record<string, string> = {
   media: 'Media',
   baja: 'Baja',
 }
+
+// Desempate dentro de un mismo estado.
+export const PRIORITY_ORDER: Record<string, number> = { alta: 0, media: 1, baja: 2 }
 
 export const PRIORITY_BADGE_CLASSES: Record<string, string> = {
   alta: 'bg-red-100 text-red-800',

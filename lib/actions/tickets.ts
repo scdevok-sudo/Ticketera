@@ -8,6 +8,7 @@ import { sendAcuseRecibo } from '@/lib/actions/email'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
 import { validateAttachment } from '@/lib/constants/attachments'
+import { ESTADO_ORDER, PRIORITY_ORDER } from '@/lib/constants/tickets'
 
 const TicketSchema = z.object({
   type: z.enum(['reclamo', 'pedido', 'pregunta']),
@@ -279,12 +280,19 @@ export async function getAllTickets(filters: TicketFilters) {
 
   const { data, count } = await query.range(from, to)
 
-  // Postgres no ordena texto libre por urgencia real (alta/media/baja no es
-  // alfabético), así que se reordena la página ya traída en JS.
-  const PRIORITY_ORDER: Record<string, number> = { alta: 0, media: 1, baja: 2 }
-  const tickets = [...(data ?? [])].sort(
-    (a, b) => (PRIORITY_ORDER[a.priority ?? 'media'] ?? 1) - (PRIORITY_ORDER[b.priority ?? 'media'] ?? 1)
-  )
+  // Postgres no ordena texto libre por urgencia real (los estados y prioridades
+  // no son alfabéticos), así que se reordena la página ya traída en JS.
+  // Criterio principal: estado (nuevo primero, resuelto último).
+  // Desempate: prioridad.
+  const tickets = [...(data ?? [])].sort((a, b) => {
+    const estadoA = ESTADO_ORDER[a.status ?? 'nuevo'] ?? 99
+    const estadoB = ESTADO_ORDER[b.status ?? 'nuevo'] ?? 99
+    if (estadoA !== estadoB) return estadoA - estadoB
+
+    return (
+      (PRIORITY_ORDER[a.priority ?? 'media'] ?? 1) - (PRIORITY_ORDER[b.priority ?? 'media'] ?? 1)
+    )
+  })
 
   return {
     tickets,

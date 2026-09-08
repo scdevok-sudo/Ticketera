@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { STATUS_LABELS } from '@/lib/constants/tickets'
+import { formatMesCorto } from '@/lib/utils/fecha'
 
 export interface StatsPublicas {
   total: number
@@ -118,9 +119,9 @@ export async function getEvolucionMensual(): Promise<EvolucionMensual[]> {
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(-6)
     .map(([mes, count]) => {
-      const date = new Date(`${mes}-01`)
-      const label = date.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')
-      return { mes: label.charAt(0).toUpperCase() + label.slice(1), count }
+      // El offset explícito evita que el mes se corra al anterior al formatear en hora AR.
+      const date = new Date(`${mes}-01T00:00:00-03:00`)
+      return { mes: formatMesCorto(date), count }
     })
 }
 

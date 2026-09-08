@@ -8,6 +8,13 @@ import { revalidatePath } from 'next/cache'
 import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
+import {
+  MS_POR_DIA,
+  diaDeSemanaAR,
+  formatDiaMes,
+  inicioDeDiaAR,
+  inicioDeMesAR,
+} from '@/lib/utils/fecha'
 import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
 import { validateAttachment } from '@/lib/constants/attachments'
 import { sendRespuestaCiudadano, sendAsignacionOperador, sendAcuseReciboManual } from '@/lib/actions/email'
@@ -354,7 +361,8 @@ export async function getKPIs(): Promise<KPIData> {
   const allTickets = ticketsData ?? []
 
   const now = new Date()
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  // El servidor corre en UTC; los cortes de mes y semana son los del calendario argentino.
+  const startOfMonth = inicioDeMesAR(now)
 
   const porEstadoMap: Record<string, number> = {}
   for (const stage of TICKET_STAGES) porEstadoMap[stage.key] = 0
@@ -385,13 +393,15 @@ export async function getKPIs(): Promise<KPIData> {
     (t) => t.priority === 'alta' && !t.assigned_to
   ).length
 
+  // Domingo 00:00 (hora AR) de la semana en curso.
+  const domingoActual = new Date(
+    inicioDeDiaAR(now).getTime() - diaDeSemanaAR(now) * MS_POR_DIA
+  )
+
   const serieSemanal: { semana: string; cantidad: number }[] = []
   for (let i = 7; i >= 0; i--) {
-    const weekStart = new Date(now)
-    weekStart.setHours(0, 0, 0, 0)
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay() - i * 7)
-    const weekEnd = new Date(weekStart)
-    weekEnd.setDate(weekEnd.getDate() + 7)
+    const weekStart = new Date(domingoActual.getTime() - i * 7 * MS_POR_DIA)
+    const weekEnd = new Date(weekStart.getTime() + 7 * MS_POR_DIA)
 
     const cantidad = allTickets.filter((t) => {
       if (!t.created_at) return false
@@ -400,7 +410,7 @@ export async function getKPIs(): Promise<KPIData> {
     }).length
 
     serieSemanal.push({
-      semana: weekStart.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }),
+      semana: formatDiaMes(weekStart),
       cantidad,
     })
   }

@@ -1,4 +1,5 @@
 import { TICKET_STAGES } from '@/lib/constants/tickets'
+import { formatFechaHora } from '@/lib/utils/fecha'
 
 interface TicketEvent {
   id: string
@@ -54,13 +55,7 @@ export function TicketTimeline({ status, events }: TicketTimelineProps) {
               </p>
               {event?.created_at && (
                 <p className="mt-0.5 text-xs text-zinc-500">
-                  {new Date(event.created_at).toLocaleString('es-AR', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  {formatFechaHora(event.created_at)}
                 </p>
               )}
               {event?.content && <p className="mt-1 text-sm text-zinc-600">{event.content}</p>}

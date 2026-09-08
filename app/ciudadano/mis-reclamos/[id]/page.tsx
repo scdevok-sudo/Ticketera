@@ -7,6 +7,7 @@ import { StatusBadge } from '@/components/ciudadano/status-badge'
 import { TicketTimeline } from '@/components/ciudadano/ticket-timeline'
 import { AdhesionBtn } from '@/components/ciudadano/adhesion-btn'
 import { CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
+import { formatFecha } from '@/lib/utils/fecha'
 import { Icon } from '@/components/ui/icon'
 import { SuccessBanner } from './success-banner'
 
@@ -49,13 +50,7 @@ export default async function TicketDetailPage({
 
   const status = ticket.status ?? 'nuevo'
   const ticketNum = ticket.id.slice(0, 8).toUpperCase()
-  const fecha = ticket.created_at
-    ? new Date(ticket.created_at).toLocaleDateString('es-AR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-    : ''
+  const fecha = ticket.created_at ? formatFecha(ticket.created_at) : ''
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">

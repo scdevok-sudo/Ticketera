@@ -8,6 +8,7 @@ import {
   CATEGORY_LABELS,
   TIPO_TRAMITE_LABELS,
 } from '@/lib/constants/tickets'
+import { formatFecha } from '@/lib/utils/fecha'
 import { Icon } from '@/components/ui/icon'
 import { StatusBadge } from './status-badge'
 
@@ -42,13 +43,7 @@ export function TicketCard({
   const status = ticket.status ?? 'nuevo'
   const bg = CATEGORIA_BG[ticket.category] ?? '#F4F4F5'
   const iconColor = CATEGORIA_ICON_COLOR[ticket.category] ?? '#6b7280'
-  const fecha = ticket.created_at
-    ? new Date(ticket.created_at).toLocaleDateString('es-AR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-    : ''
+  const fecha = ticket.created_at ? formatFecha(ticket.created_at) : ''
 
   const cardContent = (
     <div

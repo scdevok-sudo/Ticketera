@@ -1,14 +1,7 @@
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '@/lib/constants/tickets'
 import { Icon } from '@/components/ui/icon'
 import type { CasoResuelto } from '@/lib/actions/transparencia'
-
-function formatFecha(fecha: string) {
-  return new Date(fecha).toLocaleDateString('es-AR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
+import { formatFecha } from '@/lib/utils/fecha'
 
 export function CasoResueltoCard({ caso }: { caso: CasoResuelto }) {
   return (

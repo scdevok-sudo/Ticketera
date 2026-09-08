@@ -5,6 +5,7 @@ import {
   TIPO_TRAMITE_LABELS,
   EVENT_TYPE_LABELS,
 } from '@/lib/constants/tickets'
+import { formatFechaHora } from '@/lib/utils/fecha'
 import { StatusBadgeEquipo, PriorityBadge } from '@/components/equipo/badges'
 import { CambiarEstado } from '@/components/equipo/cambiar-estado'
 import { CambiarPrioridad } from '@/components/equipo/cambiar-prioridad'
@@ -96,16 +97,6 @@ interface TicketDetailEquipoProps {
   teamMembers: TeamMemberOption[]
   photoUrl: string | null
   photoIsPdf?: boolean
-}
-
-function formatFechaHora(fecha: string) {
-  return new Date(fecha).toLocaleString('es-AR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
 }
 
 export function TicketDetailEquipo({

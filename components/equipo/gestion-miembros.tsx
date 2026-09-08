@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { agregarMiembro, desactivarMiembro } from '@/lib/actions/equipo'
+import { formatFechaCorta } from '@/lib/utils/fecha'
 
 export interface MemberRow {
   id: string
@@ -76,7 +77,7 @@ export function GestionMiembros({ members }: { members: MemberRow[] }) {
                 </td>
                 <td className="px-5 py-3 text-gray-600">{m.area ?? '—'}</td>
                 <td className="px-5 py-3 text-gray-500">
-                  {m.createdAt ? new Date(m.createdAt).toLocaleDateString('es-AR') : '—'}
+                  {m.createdAt ? formatFechaCorta(m.createdAt) : '—'}
                 </td>
                 <td className="px-5 py-3">
                   {confirmingId === m.id ? (

@@ -6,6 +6,8 @@ import {
   STATUS_LABELS,
   PRIORITY_LABELS,
   TICKET_STAGES,
+  ESTADO_ORDER,
+  PRIORITY_ORDER,
 } from '@/lib/constants/tickets'
 
 // Categorías definitivas del folleto "díptico JC V3"
@@ -91,5 +93,53 @@ describe('TICKET_STAGES', () => {
         expect(stage.label.toLowerCase()).not.toContain('reclamo')
       }
     }
+  })
+})
+
+describe('ESTADO_ORDER', () => {
+  const ORDEN_PEDIDO = [
+    'nuevo',
+    'en_revision',
+    'en_gestion',
+    'derivado',
+    'requiere_info',
+    'resuelto',
+  ]
+
+  it('ordena los estados según la urgencia de atención pedida por el equipo', () => {
+    const ordenados = Object.keys(ESTADO_ORDER).sort(
+      (a, b) => ESTADO_ORDER[a] - ESTADO_ORDER[b]
+    )
+    expect(ordenados).toEqual(ORDEN_PEDIDO)
+  })
+
+  it('cubre todos los estados del sistema', () => {
+    for (const stage of TICKET_STAGES) {
+      expect(ESTADO_ORDER[stage.key]).toBeTypeOf('number')
+    }
+  })
+
+  it('deja resuelto último', () => {
+    const maximo = Math.max(...Object.values(ESTADO_ORDER))
+    expect(ESTADO_ORDER.resuelto).toBe(maximo)
+  })
+
+  it('ordena una lista de tickets por estado y desempata por prioridad', () => {
+    const tickets = [
+      { id: 'a', status: 'resuelto', priority: 'alta' },
+      { id: 'b', status: 'nuevo', priority: 'baja' },
+      { id: 'c', status: 'nuevo', priority: 'alta' },
+      { id: 'd', status: 'derivado', priority: 'media' },
+      { id: 'e', status: 'en_revision', priority: 'media' },
+    ]
+
+    const ordenados = [...tickets].sort((a, b) => {
+      const estadoA = ESTADO_ORDER[a.status] ?? 99
+      const estadoB = ESTADO_ORDER[b.status] ?? 99
+      if (estadoA !== estadoB) return estadoA - estadoB
+      return (PRIORITY_ORDER[a.priority] ?? 1) - (PRIORITY_ORDER[b.priority] ?? 1)
+    })
+
+    expect(ordenados.map((t) => t.id)).toEqual(['c', 'b', 'e', 'd', 'a'])
   })
 })

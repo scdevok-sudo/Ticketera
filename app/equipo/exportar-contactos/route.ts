@@ -1,5 +1,6 @@
 import { getTeamMember } from '@/lib/supabase/auth-cache'
 import { exportarContactos } from '@/lib/actions/equipo'
+import { formatFechaCorta } from '@/lib/utils/fecha'
 
 function csvEscape(value: string): string {
   if (/[",\n]/.test(value)) {
@@ -10,7 +11,7 @@ function csvEscape(value: string): string {
 
 function formatFecha(fecha: string): string {
   if (!fecha) return ''
-  return new Date(fecha).toLocaleDateString('es-AR')
+  return formatFechaCorta(fecha)
 }
 
 export async function GET() {
