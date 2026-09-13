@@ -49,7 +49,10 @@ export default async function TicketDetailPage({
   const attachmentIsPdf = !!attachment?.storage_path.toLowerCase().endsWith('.pdf')
 
   const status = ticket.status ?? 'nuevo'
-  const ticketNum = ticket.id.slice(0, 8).toUpperCase()
+  // Sin ticket_number (migración pendiente) se cae al UUID corto de siempre.
+  const ticketNum = ticket.ticket_number
+    ? `#${ticket.ticket_number}`
+    : `#UC-${ticket.id.slice(0, 8).toUpperCase()}`
   const fecha = ticket.created_at ? formatFecha(ticket.created_at) : ''
 
   return (
@@ -66,7 +69,7 @@ export default async function TicketDetailPage({
       <div className="rounded-lg bg-white p-5 shadow-sm">
         <div className="mb-2 flex items-center justify-between gap-2">
           <StatusBadge status={status} />
-          <span className="text-xs font-semibold text-zinc-400">#UC-{ticketNum}</span>
+          <span className="text-xs font-semibold text-zinc-400">{ticketNum}</span>
         </div>
         <h1 className="text-lg font-bold text-zinc-800">{ticket.title}</h1>
         <p className="mt-1 text-xs text-zinc-500">

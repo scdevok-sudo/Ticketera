@@ -117,7 +117,7 @@ export async function getMyTickets() {
   const { data } = await supabase
     .from('tickets')
     .select(
-      'id, title, category, type, status, priority, localidad, created_at, updated_at, likes_count, contact_name, contact_email'
+      'id, ticket_number, title, category, type, status, priority, localidad, created_at, updated_at, likes_count, contact_name, contact_email'
     )
     .or(`citizen_id.eq.${user.id},contact_email.eq.${user.email}`)
     .order('created_at', { ascending: false })
@@ -134,7 +134,7 @@ export async function getTicketById(id: string) {
     .from('tickets')
     .select(
       `
-      id, title, category, type, status, priority, description, localidad, created_at, updated_at, likes_count,
+      id, ticket_number, title, category, type, status, priority, description, localidad, created_at, updated_at, likes_count,
       contact_name, contact_email,
       ticket_events(id, type, content, is_internal, old_status, new_status, created_at, author_id),
       ticket_attachments(id, storage_path, file_name)
@@ -197,6 +197,7 @@ export async function getConsultasPublicas(page = 1, pageSize = 20) {
     .select(
       `
       id,
+      ticket_number,
       title,
       category,
       type,
@@ -252,7 +253,7 @@ export interface TicketFilters {
 const PAGE_SIZE = 20
 
 const EQUIPO_TICKET_SELECT = `
-  id, title, category, type, status, priority, localidad, created_at, assigned_to, citizen_id,
+  id, ticket_number, title, category, type, status, priority, localidad, created_at, assigned_to, citizen_id,
   citizen:profiles!tickets_citizen_id_fkey(full_name),
   assignee:team_members!tickets_assigned_to_fkey(profiles(full_name))
 `
@@ -311,7 +312,7 @@ export async function getTicketByIdEquipo(id: string) {
     .from('tickets')
     .select(
       `
-      id, type, category, title, description, localidad, status, priority, likes_count, is_public, created_at, updated_at,
+      id, ticket_number, type, category, title, description, localidad, status, priority, likes_count, is_public, created_at, updated_at,
       contact_name, contact_email, contact_phone, contact_dni,
       citizen:profiles!tickets_citizen_id_fkey(full_name, email, phone, localidad, barrio, departamento, sexo),
       assignee:team_members!tickets_assigned_to_fkey(id, role, area, profiles(full_name, email)),

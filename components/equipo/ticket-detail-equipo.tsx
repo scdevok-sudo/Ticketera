@@ -65,6 +65,8 @@ interface Attachment {
 
 export interface TicketDetalle {
   id: string
+  /** Número ordinal de la DB. Null hasta que corra MIGRACION_TICKET_NUMBER.sql. */
+  ticket_number: number | null
   type: string
   category: string
   title: string
@@ -110,7 +112,10 @@ export function TicketDetailEquipo({
   const assigneeProfile = assignee ? unwrapEmbed(assignee.profiles) : null
   const status = ticket.status ?? 'nuevo'
   const priority = ticket.priority ?? 'media'
-  const ticketNum = ticket.id.slice(0, 8).toUpperCase()
+  // Sin ticket_number (migración pendiente) se cae al UUID corto de siempre.
+  const ticketNum = ticket.ticket_number
+    ? `#${ticket.ticket_number}`
+    : `#UC-${ticket.id.slice(0, 8).toUpperCase()}`
 
   const events = [...ticket.ticket_events].sort(
     (a, b) => new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
@@ -131,7 +136,7 @@ export function TicketDetailEquipo({
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <StatusBadgeEquipo status={status} />
               <PriorityBadge priority={priority} />
-              <span className="ml-auto text-xs font-semibold text-gray-400">#UC-{ticketNum}</span>
+              <span className="ml-auto text-xs font-semibold text-gray-400">{ticketNum}</span>
             </div>
             <h1 className="text-lg font-bold text-gray-900">{ticket.title}</h1>
             <p className="mt-1 text-xs text-gray-500">

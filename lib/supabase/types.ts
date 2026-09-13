@@ -246,6 +246,9 @@ export type Database = {
           localidad: string | null
           priority: string | null
           status: string | null
+          // Agregado a mano: la columna la crea MIGRACION_TICKET_NUMBER.sql, que
+          // todavía no se corrió. Nullable mientras tanto — el UI cae al UUID corto.
+          ticket_number: number | null
           title: string
           type: string
           updated_at: string | null
@@ -267,6 +270,7 @@ export type Database = {
           localidad?: string | null
           priority?: string | null
           status?: string | null
+          ticket_number?: number | null
           title: string
           type: string
           updated_at?: string | null
@@ -288,6 +292,7 @@ export type Database = {
           localidad?: string | null
           priority?: string | null
           status?: string | null
+          ticket_number?: number | null
           title?: string
           type?: string
           updated_at?: string | null

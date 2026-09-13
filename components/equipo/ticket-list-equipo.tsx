@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { unwrapEmbed } from '@/lib/supabase/embed'
-import { CATEGORY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
+import { CATEGORY_LABELS } from '@/lib/constants/tickets'
 import { StatusBadgeEquipo, PriorityBadge } from '@/components/equipo/badges'
 
 interface Citizen {
@@ -20,6 +20,8 @@ interface Assignee {
 
 export interface EquipoTicketRow {
   id: string
+  /** Número ordinal de la DB. Null hasta que corra MIGRACION_TICKET_NUMBER.sql. */
+  ticket_number: number | null
   type: string
   category: string
   title: string
@@ -47,7 +49,7 @@ export function TicketListEquipo({ tickets }: { tickets: EquipoTicketRow[] }) {
         <thead className="border-b border-gray-200 text-xs uppercase text-gray-500">
           <tr>
             <th className="px-4 py-3 font-medium">#</th>
-            <th className="px-4 py-3 font-medium">Tipo</th>
+            <th className="px-4 py-3 font-medium">Tema</th>
             <th className="px-4 py-3 font-medium">Título</th>
             <th className="px-4 py-3 font-medium">Ciudadano</th>
             <th className="px-4 py-3 font-medium">Localidad</th>
@@ -73,11 +75,14 @@ export function TicketListEquipo({ tickets }: { tickets: EquipoTicketRow[] }) {
                 onClick={() => router.push(href)}
                 className="cursor-pointer hover:bg-gray-50"
               >
-                <td className="px-4 py-3 font-mono text-xs text-gray-400">{ticket.id.slice(0, 8)}</td>
-                <td className="px-4 py-3 text-gray-700">{TIPO_TRAMITE_LABELS[ticket.type] ?? ticket.type}</td>
+                <td className="px-4 py-3 font-mono text-xs text-gray-400">
+                  {ticket.ticket_number ?? ticket.id.slice(0, 8)}
+                </td>
+                <td className="px-4 py-3 text-gray-700">
+                  {CATEGORY_LABELS[ticket.category] ?? ticket.category}
+                </td>
                 <td className="px-4 py-3">
                   <p className="max-w-[220px] truncate font-medium text-gray-900">{ticket.title}</p>
-                  <p className="text-xs text-gray-400">{CATEGORY_LABELS[ticket.category] ?? ticket.category}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-700">{citizen?.full_name ?? '—'}</td>
                 <td className="px-4 py-3 text-gray-700">{ticket.localidad ?? '—'}</td>
