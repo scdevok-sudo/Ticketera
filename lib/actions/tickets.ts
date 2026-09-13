@@ -77,7 +77,7 @@ export async function createTicket(
       status: 'nuevo',
       priority: 'media',
     })
-    .select('id, title, type')
+    .select('id, ticket_number, title, type')
     .single()
 
   if (error || !ticket) return { error: 'Error al registrar la consulta' }
@@ -99,6 +99,7 @@ export async function createTicket(
     await sendAcuseRecibo({
       to: user.email!,
       ticketId: ticket.id,
+      ticketNumber: ticket.ticket_number,
       title: ticket.title,
       type: ticket.type,
     })

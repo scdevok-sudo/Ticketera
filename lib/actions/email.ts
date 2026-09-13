@@ -1,20 +1,29 @@
 'use server'
 
+/**
+ * Número de caso visible para el vecino: el ordinal (#94).
+ * Sin ticket_number (migración pendiente) se cae al UUID corto de siempre.
+ */
+function numeroCaso(ticketId: string, ticketNumber?: number | null) {
+  return ticketNumber ? `#${ticketNumber}` : `#UC-${ticketId.slice(0, 8).toUpperCase()}`
+}
+
 interface AcuseReciboParams {
   to: string
   ticketId: string
+  ticketNumber?: number | null
   title: string
   type: string
 }
 
-export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseReciboParams) {
+export async function sendAcuseRecibo({ to, ticketId, ticketNumber, title, type }: AcuseReciboParams) {
   const resendKey = process.env.RESEND_API_KEY
   if (!resendKey) {
     console.warn('RESEND_API_KEY no configurada — email no enviado')
     return
   }
 
-  const ticketNum = ticketId.slice(0, 8).toUpperCase()
+  const ticketNum = numeroCaso(ticketId, ticketNumber)
   const typeLabel = type === 'pregunta' ? 'Consulta' : 'Pedido'
 
   const res = await fetch('https://api.resend.com/emails', {
@@ -27,7 +36,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
       reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
-      subject: `${typeLabel} recibido — Caso #${ticketNum}`,
+      subject: `${typeLabel} recibido — Caso ${ticketNum}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
@@ -42,7 +51,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
 
           <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
             <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
-            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UC-${ticketNum}</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">${ticketNum}</p>
             <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
           </div>
 
@@ -70,6 +79,7 @@ interface AcuseReciboManualParams {
   to: string
   contactName: string
   ticketId: string
+  ticketNumber?: number | null
   title: string
   type: string
 }
@@ -78,6 +88,7 @@ export async function sendAcuseReciboManual({
   to,
   contactName,
   ticketId,
+  ticketNumber,
   title,
   type,
 }: AcuseReciboManualParams) {
@@ -87,7 +98,7 @@ export async function sendAcuseReciboManual({
     return
   }
 
-  const ticketNum = ticketId.slice(0, 8).toUpperCase()
+  const ticketNum = numeroCaso(ticketId, ticketNumber)
   const typeLabel = type === 'pregunta' ? 'Consulta' : 'Pedido'
 
   const res = await fetch('https://api.resend.com/emails', {
@@ -100,7 +111,7 @@ export async function sendAcuseReciboManual({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
       reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
-      subject: `${typeLabel} recibido — Caso #${ticketNum}`,
+      subject: `${typeLabel} recibido — Caso ${ticketNum}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
@@ -115,7 +126,7 @@ export async function sendAcuseReciboManual({
 
           <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
             <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
-            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UC-${ticketNum}</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">${ticketNum}</p>
             <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
           </div>
 
@@ -142,18 +153,25 @@ export async function sendAcuseReciboManual({
 interface RespuestaCiudadanoParams {
   to: string
   ticketId: string
+  ticketNumber?: number | null
   title: string
   respuesta: string
 }
 
-export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }: RespuestaCiudadanoParams) {
+export async function sendRespuestaCiudadano({
+  to,
+  ticketId,
+  ticketNumber,
+  title,
+  respuesta,
+}: RespuestaCiudadanoParams) {
   const resendKey = process.env.RESEND_API_KEY
   if (!resendKey) {
     console.warn('RESEND_API_KEY no configurada — email no enviado')
     return
   }
 
-  const ticketNum = ticketId.slice(0, 8).toUpperCase()
+  const ticketNum = numeroCaso(ticketId, ticketNumber)
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -165,7 +183,7 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
       reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
-      subject: `Hay una respuesta a tu consulta #UC-${ticketNum}`,
+      subject: `Hay una respuesta a tu consulta ${ticketNum}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
@@ -180,7 +198,7 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
 
           <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
             <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
-            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UC-${ticketNum}</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">${ticketNum}</p>
             <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
           </div>
 
@@ -258,6 +276,7 @@ interface AsignacionOperadorParams {
   to: string
   operadorNombre: string
   ticketId: string
+  ticketNumber?: number | null
   title: string
   asignadoPor: string
 }
@@ -266,6 +285,7 @@ export async function sendAsignacionOperador({
   to,
   operadorNombre,
   ticketId,
+  ticketNumber,
   title,
   asignadoPor,
 }: AsignacionOperadorParams) {
@@ -275,7 +295,7 @@ export async function sendAsignacionOperador({
     return
   }
 
-  const ticketNum = ticketId.slice(0, 8).toUpperCase()
+  const ticketNum = numeroCaso(ticketId, ticketNumber)
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -287,7 +307,7 @@ export async function sendAsignacionOperador({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
       reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
-      subject: `Nuevo ticket asignado — Caso #UC-${ticketNum}`,
+      subject: `Nuevo ticket asignado — Caso ${ticketNum}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
           <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
@@ -302,7 +322,7 @@ export async function sendAsignacionOperador({
 
           <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
             <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
-            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">#UC-${ticketNum}</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">${ticketNum}</p>
             <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
           </div>
 

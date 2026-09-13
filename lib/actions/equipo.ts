@@ -79,7 +79,7 @@ export async function addRespuestaCiudadano(ticketId: string, content: string): 
 
   const { data: ticket } = await supabase
     .from('tickets')
-    .select('title, citizen:profiles!tickets_citizen_id_fkey(email)')
+    .select('ticket_number, title, citizen:profiles!tickets_citizen_id_fkey(email)')
     .eq('id', parsed.data.ticket_id)
     .single()
 
@@ -88,6 +88,7 @@ export async function addRespuestaCiudadano(ticketId: string, content: string): 
     await sendRespuestaCiudadano({
       to: citizenEmail,
       ticketId: parsed.data.ticket_id,
+      ticketNumber: ticket.ticket_number,
       title: ticket.title,
       respuesta: parsed.data.content,
     }).catch(() => {})
@@ -192,7 +193,7 @@ export async function asignarTicket(
 
       const { data: ticket } = await supabase
         .from('tickets')
-        .select('title')
+        .select('ticket_number, title')
         .eq('id', parsed.data.ticket_id)
         .single()
 
@@ -201,6 +202,7 @@ export async function asignarTicket(
           to: assigneeProfile.email,
           operadorNombre: assigneeName,
           ticketId: parsed.data.ticket_id,
+          ticketNumber: ticket.ticket_number,
           title: ticket.title,
           asignadoPor: asignadorProfile?.full_name ?? 'Un operador',
         }).catch(() => {})
@@ -602,7 +604,7 @@ export async function crearConsultaManual(
       localidad: localidadDelProblema,
       status: 'nuevo',
     })
-    .select('id, title, type')
+    .select('id, ticket_number, title, type')
     .single()
 
   if (error || !ticket) return { error: 'Error al registrar la consulta' }
@@ -625,6 +627,7 @@ export async function crearConsultaManual(
       to: parsed.data.contact_email,
       contactName: parsed.data.contact_name,
       ticketId: ticket.id,
+      ticketNumber: ticket.ticket_number,
       title: ticket.title,
       type: ticket.type,
     })
