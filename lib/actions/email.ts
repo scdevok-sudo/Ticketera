@@ -25,6 +25,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
     },
     body: JSON.stringify({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
       subject: `${typeLabel} recibido — Caso #${ticketNum}`,
       html: `
@@ -52,7 +53,7 @@ export async function sendAcuseRecibo({ to, ticketId, title, type }: AcuseRecibo
 
           <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
             Unidos Construimos · scdev.com.ar<br>
-            Este es un mensaje automático, por favor no respondas este email.
+            Podés responder este email y te contestamos a la brevedad.
           </p>
         </div>
       `,
@@ -97,6 +98,7 @@ export async function sendAcuseReciboManual({
     },
     body: JSON.stringify({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
       subject: `${typeLabel} recibido — Caso #${ticketNum}`,
       html: `
@@ -124,7 +126,7 @@ export async function sendAcuseReciboManual({
 
           <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
             Unidos Construimos · scdev.com.ar<br>
-            Este es un mensaje automático, por favor no respondas este email.
+            Podés responder este email y te contestamos a la brevedad.
           </p>
         </div>
       `,
@@ -161,6 +163,7 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
     },
     body: JSON.stringify({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
       subject: `Hay una respuesta a tu consulta #UC-${ticketNum}`,
       html: `
@@ -193,7 +196,7 @@ export async function sendRespuestaCiudadano({ to, ticketId, title, respuesta }:
 
           <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
             Unidos Construimos · scdev.com.ar<br>
-            Este es un mensaje automático, por favor no respondas este email.
+            Podés responder este email y te contestamos a la brevedad.
           </p>
         </div>
       `,
@@ -282,6 +285,7 @@ export async function sendAsignacionOperador({
     },
     body: JSON.stringify({
       from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      reply_to: 'consultas@unidosconstruimos.com.ar',
       to: [to],
       subject: `Nuevo ticket asignado — Caso #UC-${ticketNum}`,
       html: `
@@ -309,7 +313,7 @@ export async function sendAsignacionOperador({
 
           <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
             Unidos Construimos · scdev.com.ar<br>
-            Este es un mensaje automático, por favor no respondas este email.
+            Podés responder este email y te contestamos a la brevedad.
           </p>
         </div>
       `,
