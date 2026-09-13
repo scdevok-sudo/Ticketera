@@ -1,9 +1,9 @@
-import Link from 'next/link'
 import { getAllTickets } from '@/lib/actions/tickets'
 import { getTeamMembers } from '@/lib/actions/equipo'
 import { unwrapEmbed } from '@/lib/supabase/embed'
 import { FiltrosTicket } from '@/components/equipo/filtros-ticket'
 import { TicketListEquipo } from '@/components/equipo/ticket-list-equipo'
+import { PaginacionEquipo } from '@/components/equipo/paginacion-equipo'
 
 interface PageProps {
   searchParams: Promise<{
@@ -12,6 +12,7 @@ interface PageProps {
     area?: string
     responsable?: string
     tipo?: string
+    category?: string
     q?: string
     page?: string
     nueva?: string
@@ -29,6 +30,7 @@ export default async function TicketsEquipoPage({ searchParams }: PageProps) {
       area: params.area,
       responsable: params.responsable,
       tipo: params.tipo,
+      category: params.category,
       q: params.q,
       page,
     }),
@@ -40,10 +42,6 @@ export default async function TicketsEquipoPage({ searchParams }: PageProps) {
     nombre: unwrapEmbed(m.profiles)?.full_name ?? 'Sin nombre',
   }))
 
-  const from = total === 0 ? 0 : (page - 1) * pageSize + 1
-  const to = Math.min(page * pageSize, total)
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
-
   function buildPageHref(targetPage: number) {
     const sp = new URLSearchParams()
     if (params.estado) sp.set('estado', params.estado)
@@ -51,6 +49,7 @@ export default async function TicketsEquipoPage({ searchParams }: PageProps) {
     if (params.area) sp.set('area', params.area)
     if (params.responsable) sp.set('responsable', params.responsable)
     if (params.tipo) sp.set('tipo', params.tipo)
+    if (params.category) sp.set('category', params.category)
     if (params.q) sp.set('q', params.q)
     sp.set('page', String(targetPage))
     return `/equipo/tickets?${sp.toString()}`
@@ -85,31 +84,12 @@ export default async function TicketsEquipoPage({ searchParams }: PageProps) {
         <>
           <TicketListEquipo tickets={tickets} />
 
-          <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-            <span>
-              Mostrando {from}–{to} de {total}
-            </span>
-            <div className="flex gap-2">
-              <Link
-                href={buildPageHref(Math.max(1, page - 1))}
-                aria-disabled={page <= 1}
-                className={`rounded-lg border border-gray-300 bg-white px-3 py-1.5 ${
-                  page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'
-                }`}
-              >
-                Anterior
-              </Link>
-              <Link
-                href={buildPageHref(Math.min(totalPages, page + 1))}
-                aria-disabled={page >= totalPages}
-                className={`rounded-lg border border-gray-300 bg-white px-3 py-1.5 ${
-                  page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'
-                }`}
-              >
-                Siguiente
-              </Link>
-            </div>
-          </div>
+          <PaginacionEquipo
+            page={page}
+            total={total}
+            pageSize={pageSize}
+            buildHref={buildPageHref}
+          />
         </>
       )}
     </div>

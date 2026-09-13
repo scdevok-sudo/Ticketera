@@ -246,6 +246,7 @@ export interface TicketFilters {
   area?: string
   responsable?: string
   tipo?: string
+  category?: string
   q?: string
   page?: number
 }
@@ -277,6 +278,7 @@ export async function getAllTickets(filters: TicketFilters) {
   if (filters.area) query = query.ilike('area', `%${filters.area}%`)
   if (filters.responsable) query = query.eq('assigned_to', filters.responsable)
   if (filters.tipo) query = query.eq('type', filters.tipo)
+  if (filters.category) query = query.eq('category', filters.category)
   if (filters.q) query = query.or(`title.ilike.%${filters.q}%,description.ilike.%${filters.q}%`)
 
   const { data, count } = await query.range(from, to)

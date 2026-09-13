@@ -2,7 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { STATUS_LABELS, PRIORITY_LABELS, TIPO_TRAMITE_LABELS } from '@/lib/constants/tickets'
+import {
+  STATUS_LABELS,
+  PRIORITY_LABELS,
+  TIPO_TRAMITE_LABELS,
+  CATEGORY_LABELS,
+} from '@/lib/constants/tickets'
 
 interface TeamMemberOption {
   id: string
@@ -13,7 +18,7 @@ interface FiltrosTicketProps {
   teamMembers: TeamMemberOption[]
 }
 
-const FILTER_KEYS = ['estado', 'prioridad', 'tipo', 'responsable', 'area', 'q']
+const FILTER_KEYS = ['estado', 'prioridad', 'tipo', 'category', 'responsable', 'area', 'q']
 
 export function FiltrosTicket({ teamMembers }: FiltrosTicketProps) {
   const router = useRouter()
@@ -76,6 +81,19 @@ export function FiltrosTicket({ teamMembers }: FiltrosTicketProps) {
       >
         <option value="">Todo tipo</option>
         {Object.entries(TIPO_TRAMITE_LABELS).map(([value, label]) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={searchParams.get('category') ?? ''}
+        onChange={(e) => updateParam('category', e.target.value)}
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700"
+      >
+        <option value="">Todo tema</option>
+        {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
           <option key={value} value={value}>
             {label}
           </option>
