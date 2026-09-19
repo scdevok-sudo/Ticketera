@@ -40,7 +40,17 @@ export const TICKET_STAGES = [
   { key: 'en_gestion', label: 'En gestión' },
   { key: 'requiere_info', label: 'Requiere más información' },
   { key: 'resuelto', label: 'Resuelto' },
+  { key: 'cerrado', label: 'Cerrado' },
 ] as const
+
+// Etapas tal como las ve el vecino: 'resuelto' es un acto interno del equipo y no
+// aparece nunca en su línea de tiempo — el caso salta de "En gestión" a "Cerrado".
+export const TICKET_STAGES_CIUDADANO = TICKET_STAGES.filter(
+  (s) => s.key !== 'resuelto'
+)
+
+// Estados en los que la gestión ya terminó (para métricas y conteos).
+export const ESTADOS_FINALIZADOS = ['resuelto', 'cerrado']
 
 export const STATUS_LABELS: Record<string, string> = {
   nuevo: 'Nuevo',
@@ -49,6 +59,7 @@ export const STATUS_LABELS: Record<string, string> = {
   en_gestion: 'En gestión',
   requiere_info: 'Requiere más información',
   resuelto: 'Resuelto',
+  cerrado: 'Cerrado',
 }
 
 export const STATUS_BADGE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -58,6 +69,7 @@ export const STATUS_BADGE_COLORS: Record<string, { bg: string; text: string; bor
   en_gestion: { bg: '#E6F1FB', text: '#2D3077', border: '#BFDBFE' },
   requiere_info: { bg: '#FEE2E2', text: '#991B1B', border: '#FECACA' },
   resuelto: { bg: '#E7F6EF', text: '#1A6B40', border: '#BBF7D0' },
+  cerrado: { bg: '#F4F4F5', text: '#52525B', border: '#E4E4E7' },
 }
 
 export const STATUS_BORDER_COLORS: Record<string, string> = {
@@ -67,6 +79,7 @@ export const STATUS_BORDER_COLORS: Record<string, string> = {
   en_gestion: '#2D3077',
   requiere_info: '#DC2626',
   resuelto: '#1A6B40',
+  cerrado: '#52525B',
 }
 
 // Paleta del dashboard de equipo (Tailwind utility classes, distinta de la del ciudadano)
@@ -77,6 +90,7 @@ export const EQUIPO_STATUS_BADGE_CLASSES: Record<string, string> = {
   en_gestion: 'bg-orange-100 text-orange-800',
   requiere_info: 'bg-red-100 text-red-800',
   resuelto: 'bg-green-100 text-green-800',
+  cerrado: 'bg-gray-100 text-gray-700',
 }
 
 // Orden de atención del listado del equipo: primero lo que requiere acción,
@@ -88,6 +102,7 @@ export const ESTADO_ORDER: Record<string, number> = {
   derivado: 3,
   requiere_info: 4,
   resuelto: 5,
+  cerrado: 6,
 }
 
 export type TicketPriority = 'alta' | 'media' | 'baja'
@@ -115,6 +130,7 @@ export const STATUS_CHART_COLORS: Record<string, string> = {
   en_gestion: '#F97316',
   requiere_info: '#EF4444',
   resuelto: '#22C55E',
+  cerrado: '#71717A',
 }
 
 export const EVENT_TYPE_LABELS: Record<string, string> = {

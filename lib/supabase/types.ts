@@ -245,6 +245,9 @@ export type Database = {
           likes_count: number | null
           localidad: string | null
           priority: string | null
+          // Valores válidos (CHECK constraint en DB): 'nuevo' | 'en_revision' | 'en_gestion' |
+          // 'derivado' | 'requiere_info' | 'resuelto' | 'cerrado'. 'cerrado' se agregó a mano
+          // acá — lo habilita MIGRACION_ESTADO_CERRADO.sql; regenerar los tipos al correrla.
           status: string | null
           // Agregado a mano: la columna la crea MIGRACION_TICKET_NUMBER.sql, que
           // todavía no se corrió. Nullable mientras tanto — el UI cae al UUID corto.

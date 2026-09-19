@@ -5,7 +5,13 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS, TICKET_STAGES } from '@/lib/constants/tickets'
+import {
+  STATUS_LABELS,
+  PRIORITY_LABELS,
+  CATEGORY_LABELS,
+  TICKET_STAGES,
+  ESTADOS_FINALIZADOS,
+} from '@/lib/constants/tickets'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { unwrapEmbed } from '@/lib/supabase/embed'
 import {
@@ -17,7 +23,12 @@ import {
 } from '@/lib/utils/fecha'
 import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
 import { validateAttachment } from '@/lib/constants/attachments'
-import { sendRespuestaCiudadano, sendAsignacionOperador, sendAcuseReciboManual } from '@/lib/actions/email'
+import {
+  sendRespuestaCiudadano,
+  sendAsignacionOperador,
+  sendAcuseReciboManual,
+  sendCierreCiudadano,
+} from '@/lib/actions/email'
 
 export type EquipoActionState = {
   error?: string
@@ -100,7 +111,15 @@ export async function addRespuestaCiudadano(ticketId: string, content: string): 
 
 const CambiarEstadoSchema = z.object({
   ticket_id: z.string().uuid(),
-  new_status: z.enum(['nuevo', 'en_revision', 'derivado', 'en_gestion', 'requiere_info', 'resuelto']),
+  new_status: z.enum([
+    'nuevo',
+    'en_revision',
+    'derivado',
+    'en_gestion',
+    'requiere_info',
+    'resuelto',
+    'cerrado',
+  ]),
 })
 
 export async function cambiarEstado(ticketId: string, newStatus: string): Promise<EquipoActionState> {
@@ -115,13 +134,25 @@ export async function cambiarEstado(ticketId: string, newStatus: string): Promis
 
   const { data: current } = await supabase
     .from('tickets')
-    .select('status')
+    .select(
+      'status, ticket_number, title, contact_name, contact_email, citizen:profiles!tickets_citizen_id_fkey(full_name, email)'
+    )
     .eq('id', parsed.data.ticket_id)
     .single()
 
   if (!current) return { error: 'Ticket no encontrado' }
 
   const oldStatus = current.status ?? 'nuevo'
+  const esCierre = parsed.data.new_status === 'cerrado'
+
+  // El cierre con el vecino solo se aplica sobre un caso ya resuelto internamente,
+  // y una vez cerrado el caso es terminal.
+  if (esCierre && oldStatus !== 'resuelto') {
+    return { error: 'Solo se puede cerrar un caso que ya está resuelto' }
+  }
+  if (oldStatus === 'cerrado') {
+    return { error: 'El caso ya está cerrado y no se puede cambiar de estado' }
+  }
 
   const { error } = await supabase
     .from('tickets')
@@ -134,11 +165,30 @@ export async function cambiarEstado(ticketId: string, newStatus: string): Promis
     ticket_id: parsed.data.ticket_id,
     author_id: user.id,
     type: 'status_change',
-    content: `Estado cambiado de ${STATUS_LABELS[oldStatus] ?? oldStatus} a ${STATUS_LABELS[parsed.data.new_status]}`,
-    is_internal: false,
+    content: esCierre
+      ? 'Caso cerrado. Gracias por tu consulta.'
+      : `Estado cambiado de ${STATUS_LABELS[oldStatus] ?? oldStatus} a ${STATUS_LABELS[parsed.data.new_status]}`,
+    // 'resuelto' es un acto interno: el vecino no debe ver ese cambio en su seguimiento.
+    is_internal: parsed.data.new_status === 'resuelto',
     old_status: oldStatus,
     new_status: parsed.data.new_status,
   })
+
+  if (esCierre) {
+    const citizen = unwrapEmbed(current.citizen)
+    // En las consultas cargadas por el equipo, citizen_id es el operador:
+    // el destinatario real es el contacto del vecino.
+    const destinatario = current.contact_email ?? citizen?.email
+    if (destinatario) {
+      await sendCierreCiudadano({
+        to: destinatario,
+        ticketId: parsed.data.ticket_id,
+        ticketNumber: current.ticket_number,
+        title: current.title,
+        citizenName: current.contact_name ?? citizen?.full_name,
+      }).catch(() => {})
+    }
+  }
 
   revalidatePath(`/equipo/tickets/${parsed.data.ticket_id}`)
   revalidatePath('/equipo/tickets')
@@ -373,7 +423,7 @@ export async function getKPIs(): Promise<KPIData> {
     porEstadoMap[status] = (porEstadoMap[status] ?? 0) + 1
   }
 
-  const resueltos = allTickets.filter((t) => t.status === 'resuelto')
+  const resueltos = allTickets.filter((t) => ESTADOS_FINALIZADOS.includes(t.status ?? ''))
   const resueltosEsteMes = resueltos.filter(
     (t) => t.updated_at && new Date(t.updated_at) >= startOfMonth
   ).length
@@ -426,8 +476,12 @@ export async function getKPIs(): Promise<KPIData> {
     const nombre = unwrapEmbed(m.profiles)?.full_name ?? 'Sin nombre'
     // tickets.assigned_to referencia team_members.id, no el user_id del operador.
     const ticketsDelOperador = allTickets.filter((t) => t.assigned_to === m.id)
-    const ticketsActivos = ticketsDelOperador.filter((t) => t.status !== 'resuelto').length
-    const resueltosOperador = ticketsDelOperador.filter((t) => t.status === 'resuelto')
+    const ticketsActivos = ticketsDelOperador.filter(
+      (t) => !ESTADOS_FINALIZADOS.includes(t.status ?? '')
+    ).length
+    const resueltosOperador = ticketsDelOperador.filter((t) =>
+      ESTADOS_FINALIZADOS.includes(t.status ?? '')
+    )
     const resueltosEsteMesOperador = resueltosOperador.filter(
       (t) => t.updated_at && new Date(t.updated_at) >= startOfMonth
     ).length

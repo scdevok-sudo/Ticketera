@@ -6,9 +6,12 @@ import {
   STATUS_LABELS,
   PRIORITY_LABELS,
   TICKET_STAGES,
+  TICKET_STAGES_CIUDADANO,
   ESTADO_ORDER,
+  ESTADOS_FINALIZADOS,
   PRIORITY_ORDER,
 } from '@/lib/constants/tickets'
+import { estadoParaCiudadano } from '@/lib/utils/estado-ciudadano'
 
 // Categorías definitivas del folleto "díptico JC V3"
 const CATEGORIAS_FOLLETO = [
@@ -59,7 +62,15 @@ describe('CATEGORIES', () => {
 
 describe('STATUS_LABELS', () => {
   it('incluye todos los estados del sistema', () => {
-    const estadosRequeridos = ['nuevo', 'en_revision', 'derivado', 'en_gestion', 'requiere_info', 'resuelto']
+    const estadosRequeridos = [
+      'nuevo',
+      'en_revision',
+      'derivado',
+      'en_gestion',
+      'requiere_info',
+      'resuelto',
+      'cerrado',
+    ]
     for (const estado of estadosRequeridos) {
       expect(STATUS_LABELS).toHaveProperty(estado)
       expect(STATUS_LABELS[estado]).toBeTruthy()
@@ -104,6 +115,7 @@ describe('ESTADO_ORDER', () => {
     'derivado',
     'requiere_info',
     'resuelto',
+    'cerrado',
   ]
 
   it('ordena los estados según la urgencia de atención pedida por el equipo', () => {
@@ -119,9 +131,10 @@ describe('ESTADO_ORDER', () => {
     }
   })
 
-  it('deja resuelto último', () => {
+  it('deja cerrado último', () => {
     const maximo = Math.max(...Object.values(ESTADO_ORDER))
-    expect(ESTADO_ORDER.resuelto).toBe(maximo)
+    expect(ESTADO_ORDER.cerrado).toBe(maximo)
+    expect(ESTADO_ORDER.cerrado).toBeGreaterThan(ESTADO_ORDER.resuelto)
   })
 
   it('ordena una lista de tickets por estado y desempata por prioridad', () => {
@@ -141,5 +154,50 @@ describe('ESTADO_ORDER', () => {
     })
 
     expect(ordenados.map((t) => t.id)).toEqual(['c', 'b', 'e', 'd', 'a'])
+  })
+})
+
+describe('estadoParaCiudadano', () => {
+  it('oculta resuelto y lo muestra como en gestión', () => {
+    expect(estadoParaCiudadano('resuelto')).toBe('en_gestion')
+  })
+
+  it('deja pasar cerrado tal cual', () => {
+    expect(estadoParaCiudadano('cerrado')).toBe('cerrado')
+  })
+
+  it('deja pasar el resto de los estados sin cambios', () => {
+    for (const estado of ['nuevo', 'en_revision', 'derivado', 'en_gestion', 'requiere_info']) {
+      expect(estadoParaCiudadano(estado)).toBe(estado)
+    }
+  })
+
+  it('el label visible del vecino nunca dice "resuelto"', () => {
+    for (const stage of TICKET_STAGES) {
+      const visible = estadoParaCiudadano(stage.key)
+      expect(STATUS_LABELS[visible].toLowerCase()).not.toContain('resuelto')
+    }
+  })
+})
+
+describe('TICKET_STAGES_CIUDADANO', () => {
+  it('no incluye resuelto', () => {
+    expect(TICKET_STAGES_CIUDADANO.map((s) => s.key)).not.toContain('resuelto')
+  })
+
+  it('termina en cerrado', () => {
+    expect(TICKET_STAGES_CIUDADANO.at(-1)?.key).toBe('cerrado')
+  })
+
+  it('mantiene el resto de las etapas del equipo en el mismo orden', () => {
+    expect(TICKET_STAGES_CIUDADANO.map((s) => s.key)).toEqual(
+      TICKET_STAGES.map((s) => s.key).filter((k) => k !== 'resuelto')
+    )
+  })
+})
+
+describe('ESTADOS_FINALIZADOS', () => {
+  it('incluye resuelto y cerrado', () => {
+    expect(ESTADOS_FINALIZADOS).toEqual(['resuelto', 'cerrado'])
   })
 })

@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { STATUS_LABELS } from '@/lib/constants/tickets'
+import { ESTADOS_FINALIZADOS, STATUS_LABELS } from '@/lib/constants/tickets'
 import { formatMesCorto } from '@/lib/utils/fecha'
 
 export interface StatsPublicas {
@@ -23,13 +23,13 @@ export async function getStatsPublicas(): Promise<StatsPublicas> {
     .from('tickets')
     .select('*', { count: 'exact', head: true })
     .eq('is_public', true)
-    .eq('status', 'resuelto')
+    .in('status', ESTADOS_FINALIZADOS)
 
   const { data: ticketsResueltos } = await supabase
     .from('tickets')
     .select('created_at, updated_at')
     .eq('is_public', true)
-    .eq('status', 'resuelto')
+    .in('status', ESTADOS_FINALIZADOS)
 
   let promedioDias = 0
   if (ticketsResueltos && ticketsResueltos.length > 0) {
@@ -168,7 +168,7 @@ export async function getUltimosCasosResueltos(): Promise<CasoResuelto[]> {
     .from('tickets')
     .select('id, title, category, area, localidad, updated_at')
     .eq('is_public', true)
-    .eq('status', 'resuelto')
+    .in('status', ESTADOS_FINALIZADOS)
     .order('updated_at', { ascending: false })
     .limit(10)
 

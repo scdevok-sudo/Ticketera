@@ -82,3 +82,38 @@ describe('Terminología — sin "reclamo" en la UI', () => {
     })
   }
 })
+
+// El vecino nunca debe ver la palabra "resuelto": 'resuelto' es un acto interno del
+// equipo y en las pantallas del ciudadano se presenta como "En gestión" (ver
+// lib/utils/estado-ciudadano.ts). Solo se permite en comentarios y valores internos.
+const PATRONES_RESUELTO_PERMITIDOS = [
+  /^\s*(\/\/|\*|\/\*)/, // comentarios de código
+  /'resuelto'/, // valor interno de DB
+  /"resuelto"/,
+  /`resuelto`/,
+]
+
+describe('Terminología — sin "resuelto" en las pantallas del ciudadano', () => {
+  const carpetas = [join(process.cwd(), 'app', 'ciudadano'), join(process.cwd(), 'components', 'ciudadano')]
+  const archivos = carpetas.flatMap(getTextFiles)
+
+  it('se encontraron archivos del ciudadano para analizar', () => {
+    expect(archivos.length).toBeGreaterThan(3)
+  })
+
+  for (const archivo of archivos) {
+    it(`${archivo.replace(process.cwd(), '')} no muestra "resuelto" al vecino`, () => {
+      const lineas = readFileSync(archivo, 'utf-8').split('\n')
+
+      for (let i = 0; i < lineas.length; i++) {
+        const linea = lineas[i]
+        if (!/resuelt/i.test(linea)) continue
+        if (PATRONES_RESUELTO_PERMITIDOS.some((patron) => patron.test(linea))) continue
+
+        expect.fail(
+          `"resuelto" visible en ${archivo.replace(process.cwd(), '')}:${i + 1}\n  → ${linea.trim()}`
+        )
+      }
+    })
+  }
+})

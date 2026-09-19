@@ -1,4 +1,5 @@
-import { TICKET_STAGES } from '@/lib/constants/tickets'
+import { TICKET_STAGES_CIUDADANO } from '@/lib/constants/tickets'
+import { estadoParaCiudadano } from '@/lib/utils/estado-ciudadano'
 import { formatFechaHora } from '@/lib/utils/fecha'
 
 interface TicketEvent {
@@ -16,14 +17,17 @@ interface TicketTimelineProps {
 
 export function TicketTimeline({ status, events }: TicketTimelineProps) {
   const publicEvents = events.filter((e) => !e.is_internal)
-  const currentIndex = TICKET_STAGES.findIndex((s) => s.key === status)
+  // 'resuelto' se muestra como 'en_gestion': el vecino solo ve el cierre formal.
+  const currentIndex = TICKET_STAGES_CIUDADANO.findIndex(
+    (s) => s.key === estadoParaCiudadano(status)
+  )
 
   return (
     <div>
-      {TICKET_STAGES.map((stage, i) => {
+      {TICKET_STAGES_CIUDADANO.map((stage, i) => {
         const event = publicEvents.find((e) => e.new_status === stage.key)
         const state = i < currentIndex ? 'done' : i === currentIndex ? 'active' : 'pending'
-        const isLast = i === TICKET_STAGES.length - 1
+        const isLast = i === TICKET_STAGES_CIUDADANO.length - 1
 
         return (
           <div key={stage.key} className="flex gap-3">

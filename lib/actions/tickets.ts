@@ -8,7 +8,7 @@ import { sendAcuseRecibo } from '@/lib/actions/email'
 import { getUser, getTeamMember } from '@/lib/supabase/auth-cache'
 import { getAttachmentFromFormData, uploadTicketAttachment } from '@/lib/supabase/attachments'
 import { validateAttachment } from '@/lib/constants/attachments'
-import { ESTADO_ORDER, PRIORITY_ORDER } from '@/lib/constants/tickets'
+import { ESTADO_ORDER, ESTADOS_FINALIZADOS, PRIORITY_ORDER } from '@/lib/constants/tickets'
 
 const TicketSchema = z.object({
   type: z.enum(['reclamo', 'pedido', 'pregunta']),
@@ -212,7 +212,7 @@ export async function getConsultasPublicas(page = 1, pageSize = 20) {
     )
     .eq('is_public', true)
     .neq('citizen_id', user.id)
-    .neq('status', 'resuelto')
+    .not('status', 'in', `(${ESTADOS_FINALIZADOS.join(',')})`)
     .order('likes_count', { ascending: false })
     .order('created_at', { ascending: false })
     .range(from, to)

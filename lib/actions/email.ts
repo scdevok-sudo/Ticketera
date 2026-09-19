@@ -345,3 +345,82 @@ export async function sendAsignacionOperador({
     console.error('Resend error al notificar asignación:', err)
   }
 }
+
+interface CierreCiudadanoParams {
+  to: string
+  ticketId: string
+  ticketNumber?: number | null
+  title: string
+  citizenName?: string | null
+}
+
+export async function sendCierreCiudadano({
+  to,
+  ticketId,
+  ticketNumber,
+  title,
+  citizenName,
+}: CierreCiudadanoParams) {
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) {
+    console.warn('RESEND_API_KEY no configurada — email no enviado')
+    return
+  }
+
+  const ticketNum = numeroCaso(ticketId, ticketNumber)
+  const saludo = citizenName ? `Hola ${citizenName}, tu` : 'Tu'
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Unidos Construimos <noresponder@unidosconstruimos.com.ar>',
+      reply_to: 'consultas@unidosconstruimos.com.ar',
+      to: [to],
+      subject: `Tu consulta ${ticketNum} fue resuelta`,
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
+          <div style="background: linear-gradient(135deg, #FFB002, #FF7402); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+            <img src="https://www.unidosconstruimos.com.ar/brand/logo-blanco.png" alt="Unidos Construimos" style="height: 48px; width: auto; margin-bottom: 12px;" />
+            <h1 style="color: white; margin: 0; font-size: 20px; font-weight: 800;">Unidos Construimos</h1>
+          </div>
+
+          <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 8px;">${saludo} consulta fue resuelta</h2>
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+            El equipo del Diputado Corral terminó de gestionar tu consulta y la damos por cerrada.
+            Podés ver todo el detalle de lo que se hizo en el seguimiento del caso.
+          </p>
+
+          <div style="background: #FFF8F2; border: 1px solid rgba(255,116,2,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+            <p style="color: #6b7280; font-size: 12px; margin: 0 0 4px;">Número de caso</p>
+            <p style="color: #FF7402; font-size: 22px; font-weight: 800; margin: 0;">${ticketNum}</p>
+            <p style="color: #1a1a1a; font-size: 13px; margin: 8px 0 0;"><strong>${title}</strong></p>
+          </div>
+
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+            Gracias por participar y por confiar en nosotros. Si necesitás algo más, podés ingresar
+            una nueva consulta cuando quieras — te vamos a estar esperando.
+          </p>
+
+          <a href="${process.env.NEXT_PUBLIC_APP_URL}/ciudadano/mis-reclamos"
+             style="display: block; background: #FF7402; color: white; text-align: center; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; text-decoration: none; margin-bottom: 20px;">
+            Ver el seguimiento →
+          </a>
+
+          <p style="color: #9ca3af; font-size: 12px; text-align: center; line-height: 1.5;">
+            Unidos Construimos · scdev.com.ar<br>
+            Podés responder este email y te contestamos a la brevedad.
+          </p>
+        </div>
+      `,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json()
+    console.error('Resend error al enviar cierre:', err)
+  }
+}
