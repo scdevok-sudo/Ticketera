@@ -1,9 +1,28 @@
 'use client'
 
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts'
+import { agruparCerradoConResuelto } from '@/lib/utils/agrupar-cerrado-resuelto'
 
 interface GraficoEstadosProps {
   datos: { status: string; label: string; count: number }[]
+}
+
+// Aplica la agrupación de conteos (estado/cantidad) preservando label y demás campos del dataset original.
+function agruparDatos(
+  datos: { status: string; label: string; count: number }[]
+): { status: string; label: string; count: number }[] {
+  const conteos = agruparCerradoConResuelto(
+    datos.map((d) => ({ estado: d.status, cantidad: d.count }))
+  )
+
+  return conteos.map((c) => {
+    const original = datos.find((d) => d.status === c.estado)
+    if (original) {
+      return { ...original, count: c.cantidad }
+    }
+    // Edge case: había 'cerrado' pero no 'resuelto' en los datos originales.
+    return { status: 'resuelto', label: 'Resuelto', count: c.cantidad }
+  })
 }
 
 // Paleta de Paul Tol (KNMI) — distinguible en deuteranopia, protanopia y tritanopia
@@ -89,11 +108,13 @@ export function GraficoEstados({ datos }: GraficoEstadosProps) {
     )
   }
 
+  const datosAgrupados = agruparDatos(datos)
+
   return (
     <ResponsiveContainer width="100%" height={280}>
       <PieChart>
         <Pie
-          data={datos}
+          data={datosAgrupados}
           dataKey="count"
           nameKey="label"
           cx="50%"
@@ -105,7 +126,7 @@ export function GraficoEstados({ datos }: GraficoEstadosProps) {
           stroke="white"
           strokeWidth={2}
         >
-          {datos.map((entry) => (
+          {datosAgrupados.map((entry) => (
             <Cell key={entry.status} fill={ESTADO_COLORS[entry.status] ?? '#9CA3AF'} />
           ))}
         </Pie>

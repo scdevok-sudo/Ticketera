@@ -13,6 +13,7 @@ import {
   CartesianGrid,
 } from 'recharts'
 import { STATUS_LABELS, STATUS_CHART_COLORS } from '@/lib/constants/tickets'
+import { agruparCerradoConResuelto } from '@/lib/utils/agrupar-cerrado-resuelto'
 
 interface KpiChartsProps {
   serieSemanal: { semana: string; cantidad: number }[]
@@ -20,6 +21,8 @@ interface KpiChartsProps {
 }
 
 export function KpiCharts({ serieSemanal, porEstado }: KpiChartsProps) {
+  const porEstadoAgrupado = agruparCerradoConResuelto(porEstado)
+
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div className="rounded-lg bg-white p-5 shadow-sm">
@@ -40,7 +43,7 @@ export function KpiCharts({ serieSemanal, porEstado }: KpiChartsProps) {
         <ResponsiveContainer width="100%" height={260}>
           <PieChart>
             <Pie
-              data={porEstado}
+              data={porEstadoAgrupado}
               dataKey="cantidad"
               nameKey="estado"
               cx="50%"
@@ -49,7 +52,7 @@ export function KpiCharts({ serieSemanal, porEstado }: KpiChartsProps) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               label={(entry: any) => STATUS_LABELS[entry.estado] ?? entry.estado}
             >
-              {porEstado.map((entry) => (
+              {porEstadoAgrupado.map((entry) => (
                 <Cell
                   key={entry.estado}
                   fill={STATUS_CHART_COLORS[entry.estado] ?? '#9CA3AF'}
