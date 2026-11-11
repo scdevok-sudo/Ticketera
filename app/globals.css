@@ -33,3 +33,21 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
+
+/* Velo progresivo por mora (ver lib/billing.ts y proxy.ts). Tope 0.92: el sitio sigue
+   usable hasta el apagado duro del proxy. */
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: min(var(--billing-veil, 0), 0.92);
+  pointer-events: none;
+  z-index: 2147483647;
+  transition: opacity 0.4s;
+}
+
+/* El panel del dueño nunca queda tapado por el velo. */
+html:has([data-billing-panel])::after {
+  display: none;
+}

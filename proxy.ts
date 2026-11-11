@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getDarkness } from '@/lib/billing'
 
 const PROTECTED_ROUTES = ['/ciudadano', '/equipo', '/completar-perfil']
 
-export async function proxy(request: NextRequest) {
+async function authProxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Rutas públicas: salir sin tocar Supabase (evita latencia de ~100-450ms por request)
@@ -81,6 +82,52 @@ export async function proxy(request: NextRequest) {
   }
 
   return supabaseResponse
+}
+
+// Rutas que siguen accesibles aun con el sitio en negro total: así el dueño puede
+// entrar a apagar el sistema. /api/ping mantiene vivo el proyecto de Supabase.
+const SUSPENSION_ALLOWLIST = [
+  '/suspendido',
+  '/privacidad',
+  '/login',
+  '/auth/callback',
+  '/equipo/facturacion',
+  '/api/ping',
+]
+
+const BILLING_COOKIE = 'billing_dk'
+
+function isAllowlisted(pathname: string) {
+  return SUSPENSION_ALLOWLIST.some((p) => pathname === p || pathname.startsWith(p + '/'))
+}
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // getDarkness() nunca lanza y falla abierta (0). Un error nuestro no oscurece el sitio.
+  const darkness = await getDarkness()
+
+  if (darkness >= 1 && !isAllowlisted(pathname)) {
+    return NextResponse.rewrite(new URL('/suspendido', request.url), {
+      status: 503,
+      headers: { 'Retry-After': '3600' },
+    })
+  }
+
+  const response = await authProxy(request)
+
+  if (darkness > 0 && darkness < 1) {
+    response.cookies.set(BILLING_COOKIE, darkness.toFixed(2), {
+      path: '/',
+      sameSite: 'lax',
+      httpOnly: false,
+      maxAge: 600,
+    })
+  } else if (request.cookies.has(BILLING_COOKIE)) {
+    response.cookies.delete(BILLING_COOKIE)
+  }
+
+  return response
 }
 
 export const config = {
